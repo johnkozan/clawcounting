@@ -5,3 +5,4 @@ pub mod journal_service;
 pub mod period_service;
 pub mod report_service;
 pub mod settings_service;
+pub mod user_service;

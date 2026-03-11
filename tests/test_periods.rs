@@ -16,6 +16,7 @@ async fn create_and_list_periods() {
     let list = app
         .server
         .get("/api/v1/periods")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(list["data"].as_array().unwrap().len(), 1);
@@ -31,6 +32,7 @@ async fn overlapping_period_rejected() {
     let resp = app
         .server
         .post("/api/v1/periods")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "name": "H1-2026",
             "start_date": "2026-01-01",
@@ -58,6 +60,7 @@ async fn start_after_end_rejected() {
     let resp = app
         .server
         .post("/api/v1/periods")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "name": "Bad",
             "start_date": "2026-12-31",
@@ -89,6 +92,7 @@ async fn close_period_and_reject_new_entries() {
     let preview_resp = app
         .server
         .post(&format!("/api/v1/periods/{_period_id}/close?preview=true"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(preview_resp["data"]["preview"], true);
@@ -96,6 +100,7 @@ async fn close_period_and_reject_new_entries() {
     let period_after = app
         .server
         .get(&format!("/api/v1/periods/{_period_id}"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert!(period_after["data"]["closed_at"].is_null());
@@ -104,6 +109,7 @@ async fn close_period_and_reject_new_entries() {
     let close_resp = app
         .server
         .post(&format!("/api/v1/periods/{_period_id}/close"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(close_resp["data"]["preview"], false);
@@ -113,6 +119,7 @@ async fn close_period_and_reject_new_entries() {
     let fail = app
         .server
         .post("/api/v1/journal-entries")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "entry_date": "2026-07-01",
             "description": "Should fail",
@@ -138,6 +145,7 @@ async fn double_close_rejected() {
     // First close succeeds
     app.server
         .post(&format!("/api/v1/periods/{period_id}/close"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .assert_status_ok();
 
@@ -145,6 +153,7 @@ async fn double_close_rejected() {
     let resp = app
         .server
         .post(&format!("/api/v1/periods/{period_id}/close"))
+        .add_header(app.auth_name(), app.auth_value())
         .await;
     resp.assert_status(axum::http::StatusCode::CONFLICT);
 }
@@ -157,6 +166,7 @@ async fn close_without_retained_earnings_fails() {
     let resp = app
         .server
         .post(&format!("/api/v1/periods/{period_id}/close"))
+        .add_header(app.auth_name(), app.auth_value())
         .await;
     resp.assert_status_bad_request();
     let body = resp.json::<serde_json::Value>();

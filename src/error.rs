@@ -39,7 +39,7 @@ pub enum AppError {
     Internal(String),
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, utoipa::ToSchema)]
 struct ErrorResponse {
     code: &'static str,
     message: String,

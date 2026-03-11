@@ -22,6 +22,7 @@ async fn create_and_get_currency() {
     let get_resp = app
         .server
         .get(&format!("/api/v1/currencies/{id}"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(get_resp["data"]["code"], "USD");
@@ -41,6 +42,7 @@ async fn list_currencies_with_pagination() {
     let resp = app
         .server
         .get("/api/v1/currencies")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(resp["data"].as_array().unwrap().len(), 3);
@@ -50,6 +52,7 @@ async fn list_currencies_with_pagination() {
     let resp = app
         .server
         .get("/api/v1/currencies?limit=2")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(resp["data"].as_array().unwrap().len(), 2);
@@ -60,6 +63,7 @@ async fn list_currencies_with_pagination() {
     let resp = app
         .server
         .get(&format!("/api/v1/currencies?limit=2&cursor={cursor}"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(resp["data"].as_array().unwrap().len(), 1);
@@ -76,6 +80,7 @@ async fn duplicate_currency_code_rejected() {
     let resp = app
         .server
         .post("/api/v1/currencies")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "code": "USD",
             "name": "Another Dollar",
@@ -101,6 +106,7 @@ async fn duplicate_caip19_rejected() {
     let resp = app
         .server
         .post("/api/v1/currencies")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "code": "XYZ",
             "name": "Fake",
@@ -122,6 +128,7 @@ async fn invalid_asset_type_rejected() {
     let resp = app
         .server
         .post("/api/v1/currencies")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "code": "BAD",
             "name": "Bad",
@@ -142,6 +149,7 @@ async fn update_currency_name_and_symbol() {
     let resp = app
         .server
         .patch(&format!("/api/v1/currencies/{usd_id}"))
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({"name": "United States Dollar", "symbol": "US$"}))
         .await
         .json::<serde_json::Value>();
@@ -159,6 +167,7 @@ async fn get_nonexistent_currency_returns_404() {
     let resp = app
         .server
         .get("/api/v1/currencies/nonexistent-id")
+        .add_header(app.auth_name(), app.auth_value())
         .await;
     resp.assert_status_not_found();
 }

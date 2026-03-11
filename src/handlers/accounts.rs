@@ -6,10 +6,11 @@ use crate::app_state::AppState;
 use crate::error::AppError;
 use crate::models::account::{Account, AccountFilters, CreateAccountRequest, UpdateAccountRequest};
 use crate::models::journal_entry::{BalanceQuery, BalanceResponse, JournalEntryLine, TransactionFilters};
-use crate::models::{DataResponse, ListResponse};
+use crate::models::{DataResponse, DataResponseAccount, DataResponseBalanceResponse, DataResponseVecAccount, ListResponse, ListResponseAccount, ListResponseJournalEntryLine};
 use crate::services::{account_service, balance_service, journal_service};
 
-async fn create_account(
+#[utoipa::path(post, path = "/api/v1/accounts", request_body = CreateAccountRequest, responses((status = 200, body = DataResponseAccount)), tag = "Accounts", security(("bearer" = [])))]
+pub async fn create_account(
     State(state): State<AppState>,
     Json(req): Json<CreateAccountRequest>,
 ) -> Result<Json<DataResponse<Account>>, AppError> {
@@ -19,7 +20,8 @@ async fn create_account(
     Ok(Json(DataResponse { data: account }))
 }
 
-async fn list_accounts(
+#[utoipa::path(get, path = "/api/v1/accounts", params(AccountFilters), responses((status = 200, body = ListResponseAccount)), tag = "Accounts", security(("bearer" = [])))]
+pub async fn list_accounts(
     State(state): State<AppState>,
     Query(filters): Query<AccountFilters>,
 ) -> Result<Json<ListResponse<Account>>, AppError> {
@@ -33,7 +35,8 @@ async fn list_accounts(
     }))
 }
 
-async fn get_account(
+#[utoipa::path(get, path = "/api/v1/accounts/{id}", responses((status = 200, body = DataResponseAccount)), tag = "Accounts", security(("bearer" = [])))]
+pub async fn get_account(
     State(state): State<AppState>,
     Path(id): Path<String>,
 ) -> Result<Json<DataResponse<Account>>, AppError> {
@@ -43,7 +46,8 @@ async fn get_account(
     Ok(Json(DataResponse { data: account }))
 }
 
-async fn update_account(
+#[utoipa::path(patch, path = "/api/v1/accounts/{id}", request_body = UpdateAccountRequest, responses((status = 200, body = DataResponseAccount)), tag = "Accounts", security(("bearer" = [])))]
+pub async fn update_account(
     State(state): State<AppState>,
     Path(id): Path<String>,
     Json(req): Json<UpdateAccountRequest>,
@@ -54,7 +58,8 @@ async fn update_account(
     Ok(Json(DataResponse { data: account }))
 }
 
-async fn get_sub_accounts(
+#[utoipa::path(get, path = "/api/v1/accounts/{id}/sub-accounts", responses((status = 200, body = DataResponseVecAccount)), tag = "Accounts", security(("bearer" = [])))]
+pub async fn get_sub_accounts(
     State(state): State<AppState>,
     Path(id): Path<String>,
 ) -> Result<Json<DataResponse<Vec<Account>>>, AppError> {
@@ -64,7 +69,8 @@ async fn get_sub_accounts(
     Ok(Json(DataResponse { data: subs }))
 }
 
-async fn get_balance(
+#[utoipa::path(get, path = "/api/v1/accounts/{id}/balance", params(BalanceQuery), responses((status = 200, body = DataResponseBalanceResponse)), tag = "Accounts", security(("bearer" = [])))]
+pub async fn get_balance(
     State(state): State<AppState>,
     Path(id): Path<String>,
     Query(query): Query<BalanceQuery>,
@@ -77,7 +83,8 @@ async fn get_balance(
     Ok(Json(DataResponse { data: balance }))
 }
 
-async fn get_transactions(
+#[utoipa::path(get, path = "/api/v1/accounts/{id}/transactions", params(TransactionFilters), responses((status = 200, body = ListResponseJournalEntryLine)), tag = "Accounts", security(("bearer" = [])))]
+pub async fn get_transactions(
     State(state): State<AppState>,
     Path(id): Path<String>,
     Query(filters): Query<TransactionFilters>,

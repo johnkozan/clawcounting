@@ -21,6 +21,7 @@ async fn create_and_get_account() {
     let get_resp = app
         .server
         .get(&format!("/api/v1/accounts/{id}"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(get_resp["data"]["name"], "Cash");
@@ -36,6 +37,7 @@ async fn list_accounts_with_type_filter() {
     let resp = app
         .server
         .get("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(resp["data"].as_array().unwrap().len(), 4);
@@ -44,6 +46,7 @@ async fn list_accounts_with_type_filter() {
     let resp = app
         .server
         .get("/api/v1/accounts?account_type=asset")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(resp["data"].as_array().unwrap().len(), 1);
@@ -61,6 +64,7 @@ async fn duplicate_account_number_rejected() {
     let resp = app
         .server
         .post("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "currency_id": usd_id,
             "account_number": "1000",
@@ -82,6 +86,7 @@ async fn invalid_account_type_rejected() {
     let resp = app
         .server
         .post("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "currency_id": usd_id,
             "account_number": "9999",
@@ -102,6 +107,7 @@ async fn subledger_create_sub_account() {
     let parent = app
         .server
         .post("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "currency_id": usd_id,
             "account_number": "1200",
@@ -118,6 +124,7 @@ async fn subledger_create_sub_account() {
     let sub = app
         .server
         .post("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "account_number": "1200-001",
             "name": "AR - Customer A",
@@ -137,6 +144,7 @@ async fn subledger_create_sub_account() {
     let subs = app
         .server
         .get(&format!("/api/v1/accounts/{parent_id}/sub-accounts"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(subs["data"].as_array().unwrap().len(), 1);
@@ -150,6 +158,7 @@ async fn sub_account_without_entity_id_rejected() {
     let parent = app
         .server
         .post("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "currency_id": usd_id,
             "account_number": "1200",
@@ -165,6 +174,7 @@ async fn sub_account_without_entity_id_rejected() {
     let resp = app
         .server
         .post("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "account_number": "1200-001",
             "name": "Missing Entity",
@@ -189,6 +199,7 @@ async fn sub_account_on_non_subledger_parent_rejected() {
     let resp = app
         .server
         .post("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "account_number": "1000-001",
             "name": "Sub Cash",
@@ -214,6 +225,7 @@ async fn update_account_deactivate() {
     let resp = app
         .server
         .patch(&format!("/api/v1/accounts/{acct_id}"))
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({"is_active": false}))
         .await
         .json::<serde_json::Value>();

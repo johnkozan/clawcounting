@@ -4,18 +4,21 @@ use axum::{Json, Router};
 
 use crate::app_state::AppState;
 use crate::error::AppError;
+use crate::middleware::auth::AuthUser;
 use crate::models::journal_entry::{
     CreateJournalEntryRequest, JournalEntry, JournalEntryFilters, JournalEntryWithLines,
     ReverseRequest,
 };
-use crate::models::{DataResponse, ListResponse};
+use crate::models::{DataResponse, DataResponseJournalEntryWithLines, ListResponse, ListResponseJournalEntry};
 use crate::services::journal_service;
 
-async fn create_journal_entry(
+#[utoipa::path(post, path = "/api/v1/journal-entries", request_body = CreateJournalEntryRequest, responses((status = 200, body = DataResponseJournalEntryWithLines)), tag = "Journal Entries", security(("bearer" = [])))]
+pub async fn create_journal_entry(
     State(state): State<AppState>,
+    auth: AuthUser,
     Json(req): Json<CreateJournalEntryRequest>,
 ) -> Result<Json<DataResponse<JournalEntryWithLines>>, AppError> {
-    let user_id = state.system_user_id.clone();
+    let user_id = auth.0.id;
     let entry = state
         .with_write_mut(move |conn| {
             journal_service::create_journal_entry(conn, req, &user_id)
@@ -24,7 +27,8 @@ async fn create_journal_entry(
     Ok(Json(DataResponse { data: entry }))
 }
 
-async fn list_journal_entries(
+#[utoipa::path(get, path = "/api/v1/journal-entries", params(JournalEntryFilters), responses((status = 200, body = ListResponseJournalEntry)), tag = "Journal Entries", security(("bearer" = [])))]
+pub async fn list_journal_entries(
     State(state): State<AppState>,
     Query(filters): Query<JournalEntryFilters>,
 ) -> Result<Json<ListResponse<JournalEntry>>, AppError> {
@@ -38,7 +42,8 @@ async fn list_journal_entries(
     }))
 }
 
-async fn get_journal_entry(
+#[utoipa::path(get, path = "/api/v1/journal-entries/{id}", responses((status = 200, body = DataResponseJournalEntryWithLines)), tag = "Journal Entries", security(("bearer" = [])))]
+pub async fn get_journal_entry(
     State(state): State<AppState>,
     Path(id): Path<String>,
 ) -> Result<Json<DataResponse<JournalEntryWithLines>>, AppError> {
@@ -48,12 +53,14 @@ async fn get_journal_entry(
     Ok(Json(DataResponse { data: entry }))
 }
 
-async fn reverse_journal_entry(
+#[utoipa::path(post, path = "/api/v1/journal-entries/{id}/reverse", request_body = ReverseRequest, responses((status = 200, body = DataResponseJournalEntryWithLines)), tag = "Journal Entries", security(("bearer" = [])))]
+pub async fn reverse_journal_entry(
     State(state): State<AppState>,
+    auth: AuthUser,
     Path(id): Path<String>,
     Json(req): Json<ReverseRequest>,
 ) -> Result<Json<DataResponse<JournalEntryWithLines>>, AppError> {
-    let user_id = state.system_user_id.clone();
+    let user_id = auth.0.id;
     let entry = state
         .with_write_mut(move |conn| {
             journal_service::reverse_journal_entry(

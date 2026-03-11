@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 // ── Trial Balance ─────────────────────────────────────────────
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct TrialBalanceRow {
     pub account_id: String,
     pub account_number: String,
@@ -14,7 +14,7 @@ pub struct TrialBalanceRow {
     pub display_credit_total: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct TrialBalanceReport {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period_id: Option<String>,
@@ -28,7 +28,7 @@ pub struct TrialBalanceReport {
     pub is_balanced: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct TrialBalanceQuery {
     pub period_id: Option<String>,
     pub currency_id: Option<String>,
@@ -36,7 +36,7 @@ pub struct TrialBalanceQuery {
 
 // ── Balance Sheet ─────────────────────────────────────────────
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct BalanceSheetRow {
     pub account_id: String,
     pub account_number: String,
@@ -45,7 +45,7 @@ pub struct BalanceSheetRow {
     pub display_balance: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct BalanceSheetSection {
     pub label: String,
     pub accounts: Vec<BalanceSheetRow>,
@@ -53,7 +53,7 @@ pub struct BalanceSheetSection {
     pub display_total: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct BalanceSheetReport {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub as_of_date: Option<String>,
@@ -69,7 +69,7 @@ pub struct BalanceSheetReport {
     pub is_balanced: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct BalanceSheetQuery {
     pub period_id: Option<String>,
     pub as_of_date: Option<String>,
@@ -77,7 +77,7 @@ pub struct BalanceSheetQuery {
 
 // ── Income Statement ──────────────────────────────────────────
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct IncomeStatementRow {
     pub account_id: String,
     pub account_number: String,
@@ -86,7 +86,7 @@ pub struct IncomeStatementRow {
     pub display_amount: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct IncomeStatementReport {
     pub period_id: String,
     pub revenue: Vec<IncomeStatementRow>,
@@ -99,14 +99,14 @@ pub struct IncomeStatementReport {
     pub display_net_income: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct IncomeStatementQuery {
     pub period_id: Option<String>,
 }
 
 // ── General Ledger ────────────────────────────────────────────
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct GeneralLedgerLine {
     pub line_id: String,
     pub journal_entry_id: String,
@@ -121,7 +121,7 @@ pub struct GeneralLedgerLine {
     pub display_running_balance: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct GeneralLedgerReport {
     pub account_id: String,
     pub account_number: String,
@@ -137,7 +137,7 @@ pub struct GeneralLedgerReport {
     pub next_cursor: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct GeneralLedgerQuery {
     pub account_id: Option<String>,
     pub period_id: Option<String>,

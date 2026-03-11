@@ -36,11 +36,12 @@ src/
     i128_funcs.rs      # Custom SQLite functions
     pool.rs            # deadpool-sqlite pools
     migrations.rs      # refinery embedded migrations
-  middleware/auth.rs   # API key + JWT validation
-  models/              # Request/response structs (currency, account, journal_entry, period, report)
-  handlers/            # Axum route handlers (auth, currencies, accounts, journal_entries, periods, reports)
-  services/            # Business logic (currency, account, journal, period, report, balance services)
-  cli/                 # CLI command handlers (accounts, journal_entries, periods, currencies, admin)
+  middleware/auth.rs   # API key + JWT validation, AuthUser extractor
+  openapi.rs           # OpenAPI spec (utoipa) + Swagger UI wiring
+  models/              # Request/response structs (currency, account, journal_entry, period, report, user)
+  handlers/            # Axum route handlers (auth, currencies, accounts, journal_entries, periods, reports, settings, users)
+  services/            # Business logic (currency, account, journal, period, report, balance, settings, user services)
+  cli/                 # CLI command handlers (accounts, journal_entries, periods, currencies, users, admin)
 migrations/
   001_initial_schema.sql
   002_balance_triggers.sql

@@ -23,8 +23,10 @@ dotenvy = "0.15"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 argon2 = "0.5"
+password-hash = { version = "0.5", features = ["getrandom"] }
 rand = "0.9"
 base64 = "0.22"
+sha2 = "0.10"
 thiserror = "2"
 
 [dev-dependencies]

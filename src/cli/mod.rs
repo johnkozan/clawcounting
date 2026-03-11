@@ -3,6 +3,7 @@ pub mod currencies;
 pub mod journal_entries;
 pub mod periods;
 pub mod reports;
+pub mod users;
 
 use clap::{Parser, Subcommand};
 
@@ -56,6 +57,12 @@ pub enum Commands {
     Settings {
         #[command(subcommand)]
         command: SettingsCommands,
+    },
+
+    /// Manage users
+    Users {
+        #[command(subcommand)]
+        command: UsersCommands,
     },
 
     /// Verify balance integrity
@@ -301,6 +308,43 @@ pub enum ReportsCommands {
         /// End date (YYYY-MM-DD)
         #[arg(long)]
         end: Option<String>,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+}
+
+#[derive(Subcommand)]
+pub enum UsersCommands {
+    /// List all users
+    List {
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Create a human user
+    Create {
+        /// User name
+        #[arg(long)]
+        name: String,
+        /// Email address
+        #[arg(long)]
+        email: String,
+        /// Password
+        #[arg(long)]
+        password: String,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Create a service account (returns API key)
+    CreateServiceAccount {
+        /// Service account name
+        #[arg(long)]
+        name: String,
+        /// Permissions JSON
+        #[arg(long, default_value = "{}")]
+        permissions: String,
         /// Output as JSON
         #[arg(long)]
         json: bool,

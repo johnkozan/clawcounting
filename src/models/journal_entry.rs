@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, utoipa::ToSchema)]
 pub struct JournalEntry {
     pub id: String,
     pub period_id: String,
@@ -15,7 +15,7 @@ pub struct JournalEntry {
     pub created_at: String,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, utoipa::ToSchema)]
 pub struct JournalEntryLine {
     pub id: String,
     pub journal_entry_id: String,
@@ -32,14 +32,14 @@ pub struct JournalEntryLine {
     pub created_at: String,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, utoipa::ToSchema)]
 pub struct JournalEntryWithLines {
     #[serde(flatten)]
     pub entry: JournalEntry,
     pub lines: Vec<JournalEntryLine>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema)]
 pub struct CreateJournalEntryRequest {
     pub entry_date: String,
     pub description: String,
@@ -48,7 +48,7 @@ pub struct CreateJournalEntryRequest {
     pub lines: Vec<CreateLineRequest>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema)]
 pub struct CreateLineRequest {
     pub account_id: String,
     #[serde(default)]
@@ -58,7 +58,7 @@ pub struct CreateLineRequest {
     pub description: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct JournalEntryFilters {
     pub period_id: Option<String>,
     pub start_date: Option<String>,
@@ -74,12 +74,12 @@ impl JournalEntryFilters {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema)]
 pub struct ReverseRequest {
     pub entry_date: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct BalanceResponse {
     pub account_id: String,
     pub period_id: Option<String>,
@@ -91,12 +91,12 @@ pub struct BalanceResponse {
     pub display_balance: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct BalanceQuery {
     pub period_id: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct TransactionFilters {
     pub limit: Option<u32>,
     pub cursor: Option<String>,

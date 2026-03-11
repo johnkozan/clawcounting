@@ -4,11 +4,13 @@ use axum::{Json, Router};
 
 use crate::app_state::AppState;
 use crate::error::AppError;
+use crate::middleware::auth::AuthUser;
 use crate::models::period::{CloseQuery, ClosingResult, CreatePeriodRequest, FinancialPeriod};
-use crate::models::{DataResponse, ListResponse, PaginationParams};
+use crate::models::{DataResponse, DataResponseFinancialPeriod, DataResponseClosingResult, ListResponse, ListResponseFinancialPeriod, PaginationParams};
 use crate::services::period_service;
 
-async fn create_period(
+#[utoipa::path(post, path = "/api/v1/periods", request_body = CreatePeriodRequest, responses((status = 200, body = DataResponseFinancialPeriod)), tag = "Periods", security(("bearer" = [])))]
+pub async fn create_period(
     State(state): State<AppState>,
     Json(req): Json<CreatePeriodRequest>,
 ) -> Result<Json<DataResponse<FinancialPeriod>>, AppError> {
@@ -18,7 +20,8 @@ async fn create_period(
     Ok(Json(DataResponse { data: period }))
 }
 
-async fn list_periods(
+#[utoipa::path(get, path = "/api/v1/periods", params(PaginationParams), responses((status = 200, body = ListResponseFinancialPeriod)), tag = "Periods", security(("bearer" = [])))]
+pub async fn list_periods(
     State(state): State<AppState>,
     Query(params): Query<PaginationParams>,
 ) -> Result<Json<ListResponse<FinancialPeriod>>, AppError> {
@@ -36,7 +39,8 @@ async fn list_periods(
     }))
 }
 
-async fn get_period(
+#[utoipa::path(get, path = "/api/v1/periods/{id}", responses((status = 200, body = DataResponseFinancialPeriod)), tag = "Periods", security(("bearer" = [])))]
+pub async fn get_period(
     State(state): State<AppState>,
     Path(id): Path<String>,
 ) -> Result<Json<DataResponse<FinancialPeriod>>, AppError> {
@@ -46,12 +50,14 @@ async fn get_period(
     Ok(Json(DataResponse { data: period }))
 }
 
-async fn close_period(
+#[utoipa::path(post, path = "/api/v1/periods/{id}/close", params(CloseQuery), responses((status = 200, body = DataResponseClosingResult)), tag = "Periods", security(("bearer" = [])))]
+pub async fn close_period(
     State(state): State<AppState>,
+    auth: AuthUser,
     Path(id): Path<String>,
     Query(query): Query<CloseQuery>,
 ) -> Result<Json<DataResponse<ClosingResult>>, AppError> {
-    let user_id = state.system_user_id.clone();
+    let user_id = auth.0.id;
     let preview = query.preview;
     let result = state
         .with_write_mut(move |conn| {

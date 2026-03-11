@@ -4,7 +4,7 @@ use tracing_subscriber::EnvFilter;
 use clawcounting::app_state::AppState;
 use clawcounting::cli::{
     AccountsCommands, Cli, Commands, CurrenciesCommands, JournalEntriesCommands, PeriodsCommands,
-    ReportsCommands, SettingsCommands,
+    ReportsCommands, SettingsCommands, UsersCommands,
 };
 use clawcounting::config::Config;
 use clawcounting::db::connection::setup_connection;
@@ -273,6 +273,34 @@ async fn main() {
                     period.as_deref(),
                     start.as_deref(),
                     end.as_deref(),
+                    json,
+                ),
+            };
+            if let Err(e) = result {
+                eprintln!("Error: {e}");
+                std::process::exit(1);
+            }
+        }
+
+        Commands::Users { command } => {
+            let result = match command {
+                UsersCommands::List { json } => {
+                    clawcounting::cli::users::list(&bootstrap_conn, json)
+                }
+                UsersCommands::Create {
+                    name,
+                    email,
+                    password,
+                    json,
+                } => clawcounting::cli::users::create(&bootstrap_conn, &name, &email, &password, json),
+                UsersCommands::CreateServiceAccount {
+                    name,
+                    permissions,
+                    json,
+                } => clawcounting::cli::users::create_service_account(
+                    &bootstrap_conn,
+                    &name,
+                    &permissions,
                     json,
                 ),
             };

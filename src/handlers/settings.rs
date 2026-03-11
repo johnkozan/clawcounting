@@ -8,17 +8,18 @@ use crate::error::AppError;
 use crate::models::DataResponse;
 use crate::services::settings_service;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema)]
 pub struct UpdateSettingsRequest {
     pub retained_earnings_account_id: Option<String>,
 }
 
-#[derive(Debug, serde::Serialize)]
+#[derive(Debug, serde::Serialize, utoipa::ToSchema)]
 pub struct SettingsResponse {
     pub retained_earnings_account_id: Option<String>,
 }
 
-async fn update_settings(
+#[utoipa::path(patch, path = "/api/v1/settings", request_body = UpdateSettingsRequest, responses((status = 200, body = inline(DataResponse<SettingsResponse>))), tag = "Settings", security(("bearer" = [])))]
+pub async fn update_settings(
     State(state): State<AppState>,
     Json(req): Json<UpdateSettingsRequest>,
 ) -> Result<Json<DataResponse<SettingsResponse>>, AppError> {
@@ -56,7 +57,8 @@ async fn update_settings(
     Ok(Json(DataResponse { data: settings }))
 }
 
-async fn get_settings(
+#[utoipa::path(get, path = "/api/v1/settings", responses((status = 200, body = inline(DataResponse<SettingsResponse>))), tag = "Settings", security(("bearer" = [])))]
+pub async fn get_settings(
     State(state): State<AppState>,
 ) -> Result<Json<DataResponse<SettingsResponse>>, AppError> {
     let settings = state

@@ -1,3 +1,4 @@
+use axum::http::{HeaderName, HeaderValue};
 use axum_test::TestServer;
 use serde_json::{Value, json};
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -8,7 +9,7 @@ use clawcounting::db::connection::setup_connection;
 use clawcounting::db::migrations::run_migrations;
 use clawcounting::db::pool::DbPools;
 use clawcounting::router::build_router;
-use clawcounting::services::settings_service;
+use clawcounting::services::{settings_service, user_service};
 
 static TEST_COUNTER: AtomicU64 = AtomicU64::new(0);
 
@@ -16,6 +17,8 @@ static TEST_COUNTER: AtomicU64 = AtomicU64::new(0);
 pub struct TestApp {
     pub server: TestServer,
     pub db_path: String,
+    pub auth_token: String,
+    pub test_user_id: String,
 }
 
 impl Drop for TestApp {
@@ -42,6 +45,24 @@ impl TestApp {
         run_migrations(&mut conn).expect("Failed to run test migrations");
         let system_user_id =
             settings_service::ensure_system_user(&conn).expect("Failed to create system user");
+
+        // Create a test admin user with an API key for authentication
+        let api_key = format!("tsk_test_admin_{n}_{}", std::process::id());
+        let key_hash = user_service::hash_api_key(&api_key);
+        let test_user_id = uuid::Uuid::now_v7().to_string();
+        conn.execute(
+            "INSERT INTO users (id, name, email, api_key_hash, permissions, is_active)
+             VALUES (?1, ?2, ?3, ?4, ?5, 1)",
+            rusqlite::params![
+                &test_user_id,
+                "Test Admin",
+                format!("admin_{n}_{}@test.local", std::process::id()),
+                &key_hash,
+                r#"{"admin":true}"#,
+            ],
+        )
+        .expect("Failed to create test admin user");
+
         drop(conn);
 
         // Create pools
@@ -59,7 +80,22 @@ impl TestApp {
         let app = build_router(state);
         let server = TestServer::new(app);
 
-        TestApp { server, db_path }
+        TestApp {
+            server,
+            db_path,
+            auth_token: api_key,
+            test_user_id,
+        }
+    }
+
+    // ── Auth helpers ─────────────────────────────────────────────────
+
+    pub fn auth_name(&self) -> HeaderName {
+        HeaderName::from_static("authorization")
+    }
+
+    pub fn auth_value(&self) -> HeaderValue {
+        HeaderValue::from_str(&format!("Bearer {}", self.auth_token)).unwrap()
     }
 
     // ── Helpers ────────────────────────────────────────────────────
@@ -74,6 +110,7 @@ impl TestApp {
     ) -> Value {
         self.server
             .post("/api/v1/currencies")
+            .add_header(self.auth_name(), self.auth_value())
             .json(&json!({
                 "code": code,
                 "name": name,
@@ -103,6 +140,7 @@ impl TestApp {
     ) -> Value {
         self.server
             .post("/api/v1/accounts")
+            .add_header(self.auth_name(), self.auth_value())
             .json(&json!({
                 "currency_id": currency_id,
                 "account_number": number,
@@ -140,6 +178,7 @@ impl TestApp {
     pub async fn create_period(&self, name: &str, start: &str, end: &str) -> Value {
         self.server
             .post("/api/v1/periods")
+            .add_header(self.auth_name(), self.auth_value())
             .json(&json!({
                 "name": name,
                 "start_date": start,
@@ -180,6 +219,7 @@ impl TestApp {
 
         self.server
             .post("/api/v1/journal-entries")
+            .add_header(self.auth_name(), self.auth_value())
             .json(&json!({
                 "entry_date": date,
                 "description": description,
@@ -192,6 +232,7 @@ impl TestApp {
     pub async fn set_retained_earnings(&self, account_id: &str) -> Value {
         self.server
             .patch("/api/v1/settings")
+            .add_header(self.auth_name(), self.auth_value())
             .json(&json!({
                 "retained_earnings_account_id": account_id,
             }))
@@ -202,6 +243,36 @@ impl TestApp {
     pub async fn get_balance(&self, account_id: &str) -> Value {
         self.server
             .get(&format!("/api/v1/accounts/{account_id}/balance"))
+            .add_header(self.auth_name(), self.auth_value())
+            .await
+            .json::<Value>()
+    }
+
+    /// Make an authenticated GET request.
+    pub async fn get(&self, path: &str) -> Value {
+        self.server
+            .get(path)
+            .add_header(self.auth_name(), self.auth_value())
+            .await
+            .json::<Value>()
+    }
+
+    /// Make an authenticated POST request with a JSON body.
+    pub async fn post(&self, path: &str, body: &Value) -> Value {
+        self.server
+            .post(path)
+            .add_header(self.auth_name(), self.auth_value())
+            .json(body)
+            .await
+            .json::<Value>()
+    }
+
+    /// Make an authenticated PATCH request with a JSON body.
+    pub async fn patch(&self, path: &str, body: &Value) -> Value {
+        self.server
+            .patch(path)
+            .add_header(self.auth_name(), self.auth_value())
+            .json(body)
             .await
             .json::<Value>()
     }

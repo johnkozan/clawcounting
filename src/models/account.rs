@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, utoipa::ToSchema)]
 pub struct Account {
     pub id: String,
     pub currency_id: String,
@@ -16,7 +16,7 @@ pub struct Account {
     pub created_at: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema)]
 pub struct CreateAccountRequest {
     pub currency_id: Option<String>,
     pub account_number: String,
@@ -30,14 +30,14 @@ pub struct CreateAccountRequest {
     pub xbrl_tag: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema)]
 pub struct UpdateAccountRequest {
     pub name: Option<String>,
     pub is_active: Option<bool>,
     pub xbrl_tag: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct AccountFilters {
     pub account_type: Option<String>,
     pub currency_id: Option<String>,

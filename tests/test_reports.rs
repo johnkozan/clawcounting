@@ -87,6 +87,7 @@ async fn test_trial_balance_all_time() {
     let resp: Value = app
         .server
         .get("/api/v1/reports/trial-balance")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -128,6 +129,7 @@ async fn test_trial_balance_by_period() {
             "/api/v1/reports/trial-balance?period_id={}",
             data.period_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -147,6 +149,7 @@ async fn test_trial_balance_by_currency() {
             "/api/v1/reports/trial-balance?currency_id={}",
             data.usd_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -164,6 +167,7 @@ async fn test_trial_balance_empty() {
     let resp: Value = app
         .server
         .get("/api/v1/reports/trial-balance")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -182,6 +186,7 @@ async fn test_balance_sheet_current() {
     let resp: Value = app
         .server
         .get("/api/v1/reports/balance-sheet")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -212,11 +217,13 @@ async fn test_balance_sheet_after_period_close() {
     // Close the period
     app.server
         .post(&format!("/api/v1/periods/{}/close", data.period_id))
+        .add_header(app.auth_name(), app.auth_value())
         .await;
 
     let resp: Value = app
         .server
         .get("/api/v1/reports/balance-sheet")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -241,6 +248,7 @@ async fn test_balance_sheet_as_of_date() {
     let resp: Value = app
         .server
         .get("/api/v1/reports/balance-sheet?as_of_date=2026-03-31")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -261,6 +269,7 @@ async fn test_balance_sheet_by_period() {
             "/api/v1/reports/balance-sheet?period_id={}",
             data.period_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -283,6 +292,7 @@ async fn test_income_statement() {
             "/api/v1/reports/income-statement?period_id={}",
             data.period_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -312,6 +322,7 @@ async fn test_income_statement_requires_period() {
     let resp = app
         .server
         .get("/api/v1/reports/income-statement")
+        .add_header(app.auth_name(), app.auth_value())
         .await;
 
     assert_eq!(resp.status_code(), 400);
@@ -330,6 +341,7 @@ async fn test_general_ledger_descending() {
             "/api/v1/reports/general-ledger?account_id={}",
             data.cash_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -369,6 +381,7 @@ async fn test_general_ledger_ascending() {
             "/api/v1/reports/general-ledger?account_id={}&sort=asc",
             data.cash_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -400,6 +413,7 @@ async fn test_general_ledger_with_period_filter() {
             "/api/v1/reports/general-ledger?account_id={}&period_id={}&sort=asc",
             data.cash_id, data.period_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -420,6 +434,7 @@ async fn test_general_ledger_with_date_range() {
             "/api/v1/reports/general-ledger?account_id={}&start_date=2026-01-01&end_date=2026-03-31&sort=asc",
             data.cash_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -437,6 +452,7 @@ async fn test_general_ledger_requires_account() {
     let resp = app
         .server
         .get("/api/v1/reports/general-ledger")
+        .add_header(app.auth_name(), app.auth_value())
         .await;
 
     assert_eq!(resp.status_code(), 400);
@@ -453,6 +469,7 @@ async fn test_general_ledger_revenue_account() {
             "/api/v1/reports/general-ledger?account_id={}&sort=asc",
             data.revenue_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -495,6 +512,7 @@ async fn test_general_ledger_pagination() {
             "/api/v1/reports/general-ledger?account_id={}&sort=asc&limit=3",
             data.cash_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -513,6 +531,7 @@ async fn test_general_ledger_pagination() {
             "/api/v1/reports/general-ledger?account_id={}&sort=asc&limit=3&cursor={}",
             data.cash_id, cursor
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -543,6 +562,7 @@ async fn test_general_ledger_pagination() {
             "/api/v1/reports/general-ledger?account_id={}&sort=asc&limit=3&cursor={}",
             data.cash_id, cursor2
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -563,6 +583,7 @@ async fn test_trial_balance_matches_individual_balances() {
     let tb_resp: Value = app
         .server
         .get("/api/v1/reports/trial-balance")
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -599,6 +620,7 @@ async fn test_income_statement_matches_trial_balance() {
             "/api/v1/reports/income-statement?period_id={}",
             data.period_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 
@@ -608,6 +630,7 @@ async fn test_income_statement_matches_trial_balance() {
             "/api/v1/reports/trial-balance?period_id={}",
             data.period_id
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json();
 

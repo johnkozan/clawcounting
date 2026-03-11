@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::journal_entry::JournalEntryWithLines;
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, utoipa::ToSchema)]
 pub struct FinancialPeriod {
     pub id: String,
     pub name: String,
@@ -14,21 +14,21 @@ pub struct FinancialPeriod {
     pub created_at: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema)]
 pub struct CreatePeriodRequest {
     pub name: String,
     pub start_date: String,
     pub end_date: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, utoipa::ToSchema)]
 pub struct ClosingResult {
     pub period: FinancialPeriod,
     pub closing_entry: JournalEntryWithLines,
     pub preview: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, utoipa::ToSchema, utoipa::IntoParams)]
 pub struct CloseQuery {
     #[serde(default)]
     pub preview: bool,

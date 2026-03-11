@@ -5,10 +5,11 @@ use axum::{Json, Router};
 use crate::app_state::AppState;
 use crate::error::AppError;
 use crate::models::currency::{CreateCurrencyRequest, UpdateCurrencyRequest};
-use crate::models::{DataResponse, ListResponse, PaginationParams};
+use crate::models::{DataResponse, DataResponseCurrency, ListResponse, ListResponseCurrency, PaginationParams};
 use crate::services::currency_service;
 
-async fn create_currency(
+#[utoipa::path(post, path = "/api/v1/currencies", request_body = CreateCurrencyRequest, responses((status = 200, body = DataResponseCurrency)), tag = "Currencies", security(("bearer" = [])))]
+pub async fn create_currency(
     State(state): State<AppState>,
     Json(req): Json<CreateCurrencyRequest>,
 ) -> Result<Json<DataResponse<crate::models::currency::Currency>>, AppError> {
@@ -18,7 +19,8 @@ async fn create_currency(
     Ok(Json(DataResponse { data: currency }))
 }
 
-async fn list_currencies(
+#[utoipa::path(get, path = "/api/v1/currencies", params(PaginationParams), responses((status = 200, body = ListResponseCurrency)), tag = "Currencies", security(("bearer" = [])))]
+pub async fn list_currencies(
     State(state): State<AppState>,
     Query(params): Query<PaginationParams>,
 ) -> Result<Json<ListResponse<crate::models::currency::Currency>>, AppError> {
@@ -36,7 +38,8 @@ async fn list_currencies(
     }))
 }
 
-async fn get_currency(
+#[utoipa::path(get, path = "/api/v1/currencies/{id}", responses((status = 200, body = DataResponseCurrency)), tag = "Currencies", security(("bearer" = [])))]
+pub async fn get_currency(
     State(state): State<AppState>,
     Path(id): Path<String>,
 ) -> Result<Json<DataResponse<crate::models::currency::Currency>>, AppError> {
@@ -46,7 +49,8 @@ async fn get_currency(
     Ok(Json(DataResponse { data: currency }))
 }
 
-async fn update_currency(
+#[utoipa::path(patch, path = "/api/v1/currencies/{id}", request_body = UpdateCurrencyRequest, responses((status = 200, body = DataResponseCurrency)), tag = "Currencies", security(("bearer" = [])))]
+pub async fn update_currency(
     State(state): State<AppState>,
     Path(id): Path<String>,
     Json(req): Json<UpdateCurrencyRequest>,

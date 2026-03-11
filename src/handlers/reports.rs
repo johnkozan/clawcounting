@@ -5,10 +5,11 @@ use axum::{Json, Router};
 use crate::app_state::AppState;
 use crate::error::AppError;
 use crate::models::report::*;
-use crate::models::DataResponse;
+use crate::models::{DataResponse, DataResponseTrialBalanceReport, DataResponseBalanceSheetReport, DataResponseIncomeStatementReport, DataResponseGeneralLedgerReport};
 use crate::services::report_service;
 
-async fn trial_balance(
+#[utoipa::path(get, path = "/api/v1/reports/trial-balance", params(TrialBalanceQuery), responses((status = 200, body = DataResponseTrialBalanceReport)), tag = "Reports", security(("bearer" = [])))]
+pub async fn trial_balance(
     State(state): State<AppState>,
     Query(query): Query<TrialBalanceQuery>,
 ) -> Result<Json<DataResponse<TrialBalanceReport>>, AppError> {
@@ -18,7 +19,8 @@ async fn trial_balance(
     Ok(Json(DataResponse { data: report }))
 }
 
-async fn balance_sheet(
+#[utoipa::path(get, path = "/api/v1/reports/balance-sheet", params(BalanceSheetQuery), responses((status = 200, body = DataResponseBalanceSheetReport)), tag = "Reports", security(("bearer" = [])))]
+pub async fn balance_sheet(
     State(state): State<AppState>,
     Query(query): Query<BalanceSheetQuery>,
 ) -> Result<Json<DataResponse<BalanceSheetReport>>, AppError> {
@@ -28,7 +30,8 @@ async fn balance_sheet(
     Ok(Json(DataResponse { data: report }))
 }
 
-async fn income_statement(
+#[utoipa::path(get, path = "/api/v1/reports/income-statement", params(IncomeStatementQuery), responses((status = 200, body = DataResponseIncomeStatementReport)), tag = "Reports", security(("bearer" = [])))]
+pub async fn income_statement(
     State(state): State<AppState>,
     Query(query): Query<IncomeStatementQuery>,
 ) -> Result<Json<DataResponse<IncomeStatementReport>>, AppError> {
@@ -38,7 +41,8 @@ async fn income_statement(
     Ok(Json(DataResponse { data: report }))
 }
 
-async fn general_ledger(
+#[utoipa::path(get, path = "/api/v1/reports/general-ledger", params(GeneralLedgerQuery), responses((status = 200, body = DataResponseGeneralLedgerReport)), tag = "Reports", security(("bearer" = [])))]
+pub async fn general_ledger(
     State(state): State<AppState>,
     Query(query): Query<GeneralLedgerQuery>,
 ) -> Result<Json<DataResponse<GeneralLedgerReport>>, AppError> {

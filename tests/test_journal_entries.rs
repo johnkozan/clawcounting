@@ -41,6 +41,7 @@ async fn unbalanced_entry_rejected() {
     let resp = app
         .server
         .post("/api/v1/journal-entries")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "entry_date": "2026-03-15",
             "description": "Unbalanced",
@@ -67,6 +68,7 @@ async fn single_line_entry_rejected() {
     let resp = app
         .server
         .post("/api/v1/journal-entries")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "entry_date": "2026-03-15",
             "description": "One line",
@@ -89,6 +91,7 @@ async fn posting_to_control_account_rejected() {
     let control = app
         .server
         .post("/api/v1/accounts")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "currency_id": usd_id,
             "account_number": "1200",
@@ -104,6 +107,7 @@ async fn posting_to_control_account_rejected() {
     let resp = app
         .server
         .post("/api/v1/journal-entries")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "entry_date": "2026-03-15",
             "description": "To control",
@@ -128,12 +132,14 @@ async fn posting_to_inactive_account_rejected() {
     // Deactivate the cash account
     app.server
         .patch(&format!("/api/v1/accounts/{cash}"))
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({"is_active": false}))
         .await;
 
     let resp = app
         .server
         .post("/api/v1/journal-entries")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "entry_date": "2026-03-15",
             "description": "To inactive",
@@ -158,6 +164,7 @@ async fn entry_without_open_period_rejected() {
     let resp = app
         .server
         .post("/api/v1/journal-entries")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "entry_date": "2026-03-15",
             "description": "No period",
@@ -197,6 +204,7 @@ async fn list_journal_entries_with_period_filter() {
         .get(&format!(
             "/api/v1/journal-entries?period_id={period_id}"
         ))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
     assert_eq!(resp["data"].as_array().unwrap().len(), 2);
@@ -221,6 +229,7 @@ async fn get_journal_entry_with_lines() {
     let get_resp = app
         .server
         .get(&format!("/api/v1/journal-entries/{entry_id}"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
 
@@ -249,6 +258,7 @@ async fn reverse_journal_entry() {
     let reversal = app
         .server
         .post(&format!("/api/v1/journal-entries/{original_id}/reverse"))
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({"entry_date": "2026-03-15"}))
         .await
         .json::<serde_json::Value>();
@@ -296,6 +306,7 @@ async fn reversing_a_reversal_rejected() {
     let reversal = app
         .server
         .post(&format!("/api/v1/journal-entries/{original_id}/reverse"))
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({}))
         .await
         .json::<serde_json::Value>();
@@ -305,6 +316,7 @@ async fn reversing_a_reversal_rejected() {
     let resp = app
         .server
         .post(&format!("/api/v1/journal-entries/{reversal_id}/reverse"))
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({}))
         .await;
     resp.assert_status_bad_request();
@@ -331,6 +343,7 @@ async fn double_reversal_rejected() {
     // First reversal succeeds
     app.server
         .post(&format!("/api/v1/journal-entries/{original_id}/reverse"))
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({}))
         .await
         .assert_status_ok();
@@ -339,6 +352,7 @@ async fn double_reversal_rejected() {
     let resp = app
         .server
         .post(&format!("/api/v1/journal-entries/{original_id}/reverse"))
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({}))
         .await;
     resp.assert_status_bad_request();
@@ -407,6 +421,7 @@ async fn account_transactions_endpoint() {
     let txns = app
         .server
         .get(&format!("/api/v1/accounts/{cash}/transactions"))
+        .add_header(app.auth_name(), app.auth_value())
         .await
         .json::<serde_json::Value>();
 
@@ -451,6 +466,7 @@ async fn entry_with_metadata() {
     let resp = app
         .server
         .post("/api/v1/journal-entries")
+        .add_header(app.auth_name(), app.auth_value())
         .json(&json!({
             "entry_date": "2026-03-15",
             "description": "With metadata",
