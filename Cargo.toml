@@ -1,0 +1,31 @@
+[package]
+name = "clawcounting"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = "0.8"
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.6", features = ["cors", "trace", "fs"] }
+rusqlite = { version = "0.37", features = ["bundled", "i128_blob", "blob", "functions"] }
+deadpool-sqlite = { version = "0.12", features = ["rt_tokio_1"] }
+refinery = { version = "0.9", features = ["rusqlite"] }
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+utoipa = { version = "5", features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "9", features = ["axum"] }
+uuid = { version = "1", features = ["v7", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+iso_currency = "0.4"
+jsonwebtoken = "9"
+dotenvy = "0.15"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+argon2 = "0.5"
+rand = "0.9"
+base64 = "0.22"
+thiserror = "2"
+
+[dev-dependencies]
+axum-test = "16"

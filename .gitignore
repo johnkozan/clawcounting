@@ -1,0 +1,5 @@
+/target
+.env
+clawcounting.db
+clawcounting.db-wal
+clawcounting.db-shm
