@@ -28,4 +28,4 @@ base64 = "0.22"
 thiserror = "2"
 
 [dev-dependencies]
-axum-test = "16"
+axum-test = "19"

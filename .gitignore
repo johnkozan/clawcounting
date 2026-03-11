@@ -1,5 +1,5 @@
 /target
 .env
-clawcounting.db
-clawcounting.db-wal
-clawcounting.db-shm
+*.db
+*.db-wal
+*.db-shm

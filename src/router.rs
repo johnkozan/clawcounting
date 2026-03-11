@@ -4,6 +4,7 @@ use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 
 use crate::app_state::AppState;
+use crate::handlers;
 
 async fn health() -> Json<Value> {
     Json(json!({"status": "ok"}))
@@ -12,12 +13,11 @@ async fn health() -> Json<Value> {
 pub fn build_router(state: AppState) -> Router {
     Router::new()
         .route("/health", get(health))
-        // Placeholder route groups for future endpoints
-        .nest("/api/v1/currencies", Router::new())
-        .nest("/api/v1/accounts", Router::new())
-        .nest("/api/v1/journal-entries", Router::new())
-        .nest("/api/v1/periods", Router::new())
-        .nest("/api/v1/reports", Router::new())
+        .nest("/api/v1/currencies", handlers::currencies::router())
+        .nest("/api/v1/accounts", handlers::accounts::router())
+        .nest("/api/v1/journal-entries", handlers::journal_entries::router())
+        .nest("/api/v1/periods", handlers::periods::router())
+        .nest("/api/v1/settings", handlers::settings::router())
         .layer(TraceLayer::new_for_http())
         .layer(CorsLayer::permissive())
         .with_state(state)
