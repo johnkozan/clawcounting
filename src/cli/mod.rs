@@ -2,6 +2,7 @@ pub mod accounts;
 pub mod currencies;
 pub mod journal_entries;
 pub mod periods;
+pub mod reports;
 
 use clap::{Parser, Subcommand};
 
@@ -43,6 +44,12 @@ pub enum Commands {
     Currencies {
         #[command(subcommand)]
         command: CurrenciesCommands,
+    },
+
+    /// Generate financial reports
+    Reports {
+        #[command(subcommand)]
+        command: ReportsCommands,
     },
 
     /// Manage settings
@@ -239,6 +246,61 @@ pub enum CurrenciesCommands {
     Get {
         /// Currency ID
         id: String,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+}
+
+#[derive(Subcommand)]
+pub enum ReportsCommands {
+    /// Generate trial balance report
+    TrialBalance {
+        /// Filter by period ID
+        #[arg(long)]
+        period: Option<String>,
+        /// Filter by currency ID
+        #[arg(long)]
+        currency: Option<String>,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Generate balance sheet report
+    BalanceSheet {
+        /// Filter by period ID
+        #[arg(long)]
+        period: Option<String>,
+        /// As-of date (YYYY-MM-DD)
+        #[arg(long = "as-of")]
+        as_of: Option<String>,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Generate income statement report
+    IncomeStatement {
+        /// Period ID (required)
+        #[arg(long)]
+        period: String,
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
+    /// Generate general ledger detail report
+    GeneralLedger {
+        /// Account ID (required)
+        #[arg(long)]
+        account: String,
+        /// Filter by period ID
+        #[arg(long)]
+        period: Option<String>,
+        /// Start date (YYYY-MM-DD)
+        #[arg(long)]
+        start: Option<String>,
+        /// End date (YYYY-MM-DD)
+        #[arg(long)]
+        end: Option<String>,
         /// Output as JSON
         #[arg(long)]
         json: bool,

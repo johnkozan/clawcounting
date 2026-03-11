@@ -17,6 +17,7 @@ pub fn build_router(state: AppState) -> Router {
         .nest("/api/v1/accounts", handlers::accounts::router())
         .nest("/api/v1/journal-entries", handlers::journal_entries::router())
         .nest("/api/v1/periods", handlers::periods::router())
+        .nest("/api/v1/reports", handlers::reports::router())
         .nest("/api/v1/settings", handlers::settings::router())
         .layer(TraceLayer::new_for_http())
         .layer(CorsLayer::permissive())

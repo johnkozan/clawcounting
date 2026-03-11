@@ -3,6 +3,7 @@ pub mod amount;
 pub mod currency;
 pub mod journal_entry;
 pub mod period;
+pub mod report;
 
 use serde::{Deserialize, Serialize};
 

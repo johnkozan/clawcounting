@@ -4,7 +4,7 @@ use tracing_subscriber::EnvFilter;
 use clawcounting::app_state::AppState;
 use clawcounting::cli::{
     AccountsCommands, Cli, Commands, CurrenciesCommands, JournalEntriesCommands, PeriodsCommands,
-    SettingsCommands,
+    ReportsCommands, SettingsCommands,
 };
 use clawcounting::config::Config;
 use clawcounting::db::connection::setup_connection;
@@ -233,6 +233,52 @@ async fn main() {
                     eprintln!("Error: {e}");
                     std::process::exit(1);
                 }
+            }
+        }
+
+        Commands::Reports { command } => {
+            let result = match command {
+                ReportsCommands::TrialBalance {
+                    period,
+                    currency,
+                    json,
+                } => clawcounting::cli::reports::trial_balance(
+                    &bootstrap_conn,
+                    period.as_deref(),
+                    currency.as_deref(),
+                    json,
+                ),
+                ReportsCommands::BalanceSheet {
+                    period,
+                    as_of,
+                    json,
+                } => clawcounting::cli::reports::balance_sheet(
+                    &bootstrap_conn,
+                    period.as_deref(),
+                    as_of.as_deref(),
+                    json,
+                ),
+                ReportsCommands::IncomeStatement { period, json } => {
+                    clawcounting::cli::reports::income_statement(&bootstrap_conn, &period, json)
+                }
+                ReportsCommands::GeneralLedger {
+                    account,
+                    period,
+                    start,
+                    end,
+                    json,
+                } => clawcounting::cli::reports::general_ledger(
+                    &bootstrap_conn,
+                    &account,
+                    period.as_deref(),
+                    start.as_deref(),
+                    end.as_deref(),
+                    json,
+                ),
+            };
+            if let Err(e) = result {
+                eprintln!("Error: {e}");
+                std::process::exit(1);
             }
         }
 
