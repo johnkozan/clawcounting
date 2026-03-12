@@ -1,6 +1,7 @@
 use axum::{Json, Router, routing::get};
 use serde_json::{Value, json};
 use tower_http::cors::CorsLayer;
+use tower_http::services::{ServeDir, ServeFile};
 use tower_http::trace::TraceLayer;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
@@ -36,6 +37,13 @@ pub fn build_router(state: AppState) -> Router {
     let auth_routes = handlers::auth::public_router()
         .merge(handlers::auth::protected_router().route_layer(auth_middleware));
 
+    // Static frontend serving (SPA fallback)
+    let frontend_dir = std::env::var("CLAWCOUNTING_FRONTEND_DIR")
+        .unwrap_or_else(|_| "./frontend/build".to_string());
+    let index_file = format!("{}/index.html", frontend_dir);
+    let serve_frontend = ServeDir::new(&frontend_dir)
+        .not_found_service(ServeFile::new(&index_file));
+
     Router::new()
         .route("/health", get(health))
         .nest("/auth", auth_routes)
@@ -44,6 +52,7 @@ pub fn build_router(state: AppState) -> Router {
             SwaggerUi::new("/swagger-ui")
                 .url("/api/v1/openapi.json", ApiDoc::openapi()),
         )
+        .fallback_service(serve_frontend)
         .layer(TraceLayer::new_for_http())
         .layer(CorsLayer::permissive())
         .with_state(state)
