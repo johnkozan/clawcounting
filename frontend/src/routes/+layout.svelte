@@ -7,6 +7,8 @@
 	import { authStore } from '$lib/stores/auth';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import type { User } from '$lib/api';
+	import { ModeWatcher } from 'mode-watcher';
+	import { toggleMode, mode } from 'mode-watcher';
 	import {
 		LayoutDashboard,
 		BookOpen,
@@ -18,7 +20,9 @@
 		Settings,
 		LogOut,
 		Menu,
-		X
+		X,
+		Sun,
+		Moon
 	} from '@lucide/svelte';
 
 	let { children } = $props();
@@ -146,6 +150,17 @@
 						<div class="text-xs text-muted-foreground truncate">{user?.email ?? ''}</div>
 					</div>
 					<button
+						onclick={toggleMode}
+						class="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+						title="Toggle theme"
+					>
+						{#if mode.current === 'light'}
+							<Sun class="h-4 w-4" />
+						{:else}
+							<Moon class="h-4 w-4" />
+						{/if}
+					</button>
+					<button
 						onclick={handleLogout}
 						class="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
 						title="Sign out"
@@ -173,4 +188,5 @@
 	</div>
 {/if}
 
+<ModeWatcher defaultMode="system" />
 <Toaster />
