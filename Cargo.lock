@@ -342,6 +342,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3a822ea5bc7590f9d40f1ba12c0dc3c2760f3482c6984db1573ad11031420831"
 
 [[package]]
+name = "clawcounting"
+version = "0.1.0"
+dependencies = [
+ "argon2",
+ "axum",
+ "axum-test",
+ "base64",
+ "chrono",
+ "clap",
+ "deadpool-sqlite",
+ "dotenvy",
+ "iso_currency",
+ "jsonwebtoken",
+ "password-hash",
+ "rand 0.9.2",
+ "refinery",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "tokio",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+ "utoipa",
+ "utoipa-swagger-ui",
+ "uuid",
+]
+
+[[package]]
 name = "colorchoice"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1882,37 +1913,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "clawcounting"
-version = "0.1.0"
-dependencies = [
- "argon2",
- "axum",
- "axum-test",
- "base64",
- "chrono",
- "clap",
- "deadpool-sqlite",
- "dotenvy",
- "iso_currency",
- "jsonwebtoken",
- "password-hash",
- "rand 0.9.2",
- "refinery",
- "rusqlite",
- "serde",
- "serde_json",
- "sha2",
- "thiserror",
- "tokio",
- "tower-http",
- "tracing",
- "tracing-subscriber",
- "utoipa",
- "utoipa-swagger-ui",
- "uuid",
 ]
 
 [[package]]

@@ -301,6 +301,21 @@ pub fn update_user(
     Ok(get_user_internal(conn, id)?.into())
 }
 
+// ── Setup (first-run) ─────────────────────────────────────────────
+
+pub fn has_any_users(conn: &Connection) -> Result<bool, AppError> {
+    let count: i64 =
+        conn.query_row("SELECT COUNT(*) FROM users", [], |row| row.get(0))?;
+    Ok(count > 0)
+}
+
+/// Resolve a raw API key to a user ID. Used by CLI commands that need auth.
+pub fn get_user_id_by_api_key(conn: &Connection, api_key: &str) -> Result<String, AppError> {
+    let key_hash = hash_api_key(api_key);
+    let user = authenticate_by_api_key_hash(conn, &key_hash)?;
+    Ok(user.id)
+}
+
 // ── Authentication ────────────────────────────────────────────────
 
 pub fn authenticate_by_password(

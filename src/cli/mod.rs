@@ -6,6 +6,10 @@ pub mod reports;
 pub mod users;
 
 use clap::{Parser, Subcommand};
+use rusqlite::Connection;
+
+use crate::error::AppError;
+use crate::services::user_service;
 
 #[derive(Parser)]
 #[command(name = "clawcounting", about = "Foundational double-entry bookkeeping engine for AI agents")]
@@ -14,8 +18,26 @@ pub struct Cli {
     #[arg(long = "db", global = true)]
     pub db_path: Option<String>,
 
+    /// API key for authentication (or set CLAWCOUNTING_API_KEY env var).
+    /// Required for commands that create accounting records.
+    #[arg(long = "api-key", global = true)]
+    pub api_key: Option<String>,
+
     #[command(subcommand)]
     pub command: Commands,
+}
+
+/// Resolve API key from CLI flag or CLAWCOUNTING_API_KEY env var, then look up user ID.
+pub fn resolve_cli_user_id(conn: &Connection, api_key: Option<&str>) -> Result<String, AppError> {
+    let key = api_key
+        .map(|s| s.to_string())
+        .or_else(|| std::env::var("CLAWCOUNTING_API_KEY").ok())
+        .ok_or_else(|| AppError::ValidationError {
+            field: "api_key".into(),
+            message: "API key required for this operation".into(),
+            suggestion: "Provide --api-key <key> or set CLAWCOUNTING_API_KEY environment variable".into(),
+        })?;
+    user_service::get_user_id_by_api_key(conn, &key)
 }
 
 #[derive(Subcommand)]

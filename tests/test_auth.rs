@@ -3,6 +3,183 @@ mod common;
 use axum::http::{HeaderName, HeaderValue};
 use serde_json::{Value, json};
 
+// ── Setup Flow ──────────────────────────────────────────────────
+
+#[tokio::test]
+async fn setup_status_returns_needs_setup_on_fresh_db() {
+    // TestApp creates a test admin user, so we need a truly fresh DB
+    // to test needs_setup=true. Instead, test that the endpoint exists
+    // and returns needs_setup=false when users exist.
+    let app = common::TestApp::new().await;
+
+    let resp = app
+        .server
+        .get("/auth/setup/status")
+        .await
+        .json::<Value>();
+    assert_eq!(resp["data"]["needs_setup"], false);
+}
+
+#[tokio::test]
+async fn setup_creates_first_user_and_returns_tokens() {
+    let app = common::TestApp::new_without_user().await;
+
+    // Should need setup
+    let status = app
+        .server
+        .get("/auth/setup/status")
+        .await
+        .json::<Value>();
+    assert_eq!(status["data"]["needs_setup"], true);
+
+    // Run setup
+    let resp = app
+        .server
+        .post("/auth/setup")
+        .json(&json!({
+            "name": "Admin",
+            "email": "admin@example.com",
+            "password": "password123"
+        }))
+        .await;
+    resp.assert_status_ok();
+    let body = resp.json::<Value>();
+    assert!(body["data"]["access_token"].is_string());
+    assert!(body["data"]["refresh_token"].is_string());
+    assert_eq!(body["data"]["token_type"], "Bearer");
+
+    // The access token should work
+    let access_token = body["data"]["access_token"].as_str().unwrap();
+    let me_resp = app
+        .server
+        .get("/auth/me")
+        .add_header(
+            HeaderName::from_static("authorization"),
+            HeaderValue::from_str(&format!("Bearer {access_token}")).unwrap(),
+        )
+        .await
+        .json::<Value>();
+    assert_eq!(me_resp["data"]["name"], "Admin");
+    assert_eq!(me_resp["data"]["email"], "admin@example.com");
+}
+
+#[tokio::test]
+async fn setup_rejects_second_call() {
+    let app = common::TestApp::new_without_user().await;
+
+    // First setup succeeds
+    let resp = app
+        .server
+        .post("/auth/setup")
+        .json(&json!({
+            "name": "Admin",
+            "email": "admin@example.com",
+            "password": "password123"
+        }))
+        .await;
+    resp.assert_status_ok();
+
+    // Second setup fails
+    let resp2 = app
+        .server
+        .post("/auth/setup")
+        .json(&json!({
+            "name": "Hacker",
+            "email": "hacker@evil.com",
+            "password": "password123"
+        }))
+        .await;
+    resp2.assert_status_bad_request();
+    let body = resp2.json::<Value>();
+    assert!(body["message"].as_str().unwrap().contains("already been completed"));
+}
+
+#[tokio::test]
+async fn setup_status_false_after_setup() {
+    let app = common::TestApp::new_without_user().await;
+
+    app.server
+        .post("/auth/setup")
+        .json(&json!({
+            "name": "Admin",
+            "email": "admin@example.com",
+            "password": "password123"
+        }))
+        .await;
+
+    let status = app
+        .server
+        .get("/auth/setup/status")
+        .await
+        .json::<Value>();
+    assert_eq!(status["data"]["needs_setup"], false);
+}
+
+#[tokio::test]
+async fn setup_validates_password_length() {
+    let app = common::TestApp::new_without_user().await;
+
+    let resp = app
+        .server
+        .post("/auth/setup")
+        .json(&json!({
+            "name": "Admin",
+            "email": "admin@example.com",
+            "password": "short"
+        }))
+        .await;
+    resp.assert_status_bad_request();
+    let body = resp.json::<Value>();
+    assert!(body["message"].as_str().unwrap().contains("8 characters"));
+}
+
+// ── CLI API Key Resolution ───────────────────────────────────────
+
+#[test]
+fn cli_resolve_user_id_with_valid_api_key() {
+    let mut conn = clawcounting::db::connection::setup_connection(":memory:")
+        .expect("Failed to open in-memory database");
+    clawcounting::db::migrations::run_migrations(&mut conn)
+        .expect("Failed to run migrations");
+
+    // Create a service account
+    let req = clawcounting::models::user::CreateServiceAccountRequest {
+        name: "Test Agent".to_string(),
+        permissions: json!({}),
+    };
+    let (user, api_key) = clawcounting::services::user_service::create_service_account(&conn, req)
+        .expect("Failed to create service account");
+
+    // Resolve via api key
+    let resolved_id = clawcounting::cli::resolve_cli_user_id(&conn, Some(&api_key))
+        .expect("Failed to resolve user ID");
+    assert_eq!(resolved_id, user.id);
+}
+
+#[test]
+fn cli_resolve_user_id_without_api_key_fails() {
+    let mut conn = clawcounting::db::connection::setup_connection(":memory:")
+        .expect("Failed to open in-memory database");
+    clawcounting::db::migrations::run_migrations(&mut conn)
+        .expect("Failed to run migrations");
+
+    let result = clawcounting::cli::resolve_cli_user_id(&conn, None);
+    assert!(result.is_err());
+    let err = format!("{}", result.unwrap_err());
+    assert!(err.contains("API key required"));
+}
+
+#[test]
+fn cli_resolve_user_id_with_invalid_api_key_fails() {
+    let mut conn = clawcounting::db::connection::setup_connection(":memory:")
+        .expect("Failed to open in-memory database");
+    clawcounting::db::migrations::run_migrations(&mut conn)
+        .expect("Failed to run migrations");
+
+    let result = clawcounting::cli::resolve_cli_user_id(&conn, Some("tsk_invalid_key"));
+    assert!(result.is_err());
+}
+
 // ── Authentication ───────────────────────────────────────────────
 
 #[tokio::test]
@@ -107,10 +284,10 @@ async fn create_service_account_returns_api_key() {
 async fn list_users() {
     let app = common::TestApp::new().await;
 
-    // Should include the system user and the test admin
+    // Should include the test admin user
     let resp = app.get("/api/v1/users").await;
     let users = resp["data"].as_array().unwrap();
-    assert!(users.len() >= 2); // system user + test admin
+    assert!(users.len() >= 1); // test admin
 }
 
 #[tokio::test]

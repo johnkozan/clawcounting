@@ -9,7 +9,7 @@ use clawcounting::db::connection::setup_connection;
 use clawcounting::db::migrations::run_migrations;
 use clawcounting::db::pool::DbPools;
 use clawcounting::router::build_router;
-use clawcounting::services::{settings_service, user_service};
+use clawcounting::services::user_service;
 
 static TEST_COUNTER: AtomicU64 = AtomicU64::new(0);
 
@@ -43,8 +43,6 @@ impl TestApp {
         // Bootstrap DB
         let mut conn = setup_connection(&db_path).expect("Failed to open test database");
         run_migrations(&mut conn).expect("Failed to run test migrations");
-        let system_user_id =
-            settings_service::ensure_system_user(&conn).expect("Failed to create system user");
 
         // Create a test admin user with an API key for authentication
         let api_key = format!("tsk_test_admin_{n}_{}", std::process::id());
@@ -75,7 +73,6 @@ impl TestApp {
         let state = AppState {
             pools,
             config,
-            system_user_id,
         };
         let app = build_router(state);
         let server = TestServer::new(app);
@@ -85,6 +82,40 @@ impl TestApp {
             db_path,
             auth_token: api_key,
             test_user_id,
+        }
+    }
+
+    /// Create a test app with NO users (for testing setup flow).
+    pub async fn new_without_user() -> Self {
+        let n = TEST_COUNTER.fetch_add(1, Ordering::SeqCst);
+        let db_path = format!(
+            "{}/clawcounting_test_{n}_{}.db",
+            std::env::temp_dir().display(),
+            std::process::id()
+        );
+
+        let mut conn = setup_connection(&db_path).expect("Failed to open test database");
+        run_migrations(&mut conn).expect("Failed to run test migrations");
+        drop(conn);
+
+        let pools = DbPools::new(&db_path, 2).expect("Failed to create test pools");
+        let config = Config {
+            db_path: db_path.clone(),
+            port: 0,
+            jwt_secret: Some("test-secret".into()),
+        };
+        let state = AppState {
+            pools,
+            config,
+        };
+        let app = build_router(state);
+        let server = TestServer::new(app);
+
+        TestApp {
+            server,
+            db_path,
+            auth_token: String::new(),
+            test_user_id: String::new(),
         }
     }
 

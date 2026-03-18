@@ -50,8 +50,12 @@ Create a JSON file (`entry.json`):
 }
 ```
 
-Post it:
+Post it (requires API key for user attribution):
 ```bash
+clawcounting journal-entries create --file entry.json --api-key $API_KEY --json
+
+# Or set CLAWCOUNTING_API_KEY env var to avoid passing --api-key each time
+export CLAWCOUNTING_API_KEY=tsk_...
 clawcounting journal-entries create --file entry.json --json
 ```
 
@@ -181,11 +185,11 @@ Reversals are the only way to correct a posted journal entry. A reversal creates
 ### CLI
 
 ```bash
-# Reverse with original date
-clawcounting journal-entries reverse <entry-id> --json
+# Reverse with original date (requires API key)
+clawcounting journal-entries reverse <entry-id> --api-key $API_KEY --json
 
 # Reverse with a different date (e.g., correction in current period)
-clawcounting journal-entries reverse <entry-id> --date 2026-04-01 --json
+clawcounting journal-entries reverse <entry-id> --date 2026-04-01 --api-key $API_KEY --json
 ```
 
 ### API
@@ -306,7 +310,7 @@ Period close zeroes all revenue and expense accounts, transferring net income to
 Always preview first. This shows what the closing entry will look like without committing:
 
 ```bash
-clawcounting periods close <period-id> --preview --json
+clawcounting periods close <period-id> --preview --api-key $API_KEY --json
 ```
 
 API:
@@ -320,7 +324,7 @@ Review the closing entry lines — each revenue/expense account will have a line
 ### Step 2: Close
 
 ```bash
-clawcounting periods close <period-id> --json
+clawcounting periods close <period-id> --api-key $API_KEY --json
 ```
 
 API:
@@ -466,8 +470,8 @@ curl http://localhost:3000/api/v1/accounts/<sub-account-id>/balance \
 
 ```bash
 # 1. Reverse the wrong entry
-clawcounting journal-entries reverse <wrong-entry-id> --json
+clawcounting journal-entries reverse <wrong-entry-id> --api-key $API_KEY --json
 
 # 2. Post the corrected entry
-clawcounting journal-entries create --file corrected-entry.json --json
+clawcounting journal-entries create --file corrected-entry.json --api-key $API_KEY --json
 ```

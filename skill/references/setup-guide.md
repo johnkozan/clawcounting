@@ -23,7 +23,8 @@ ClawCounting has two interfaces: a CLI that connects directly to the SQLite data
 |----------|---------|----------|-------------|
 | `CLAWCOUNTING_DB` | `./clawcounting.db` | No | SQLite database file path |
 | `CLAWCOUNTING_PORT` | `3000` | No | HTTP server port |
-| `CLAWCOUNTING_JWT_SECRET` | — | **Yes, for server mode** | JWT signing secret. Generate with `openssl rand -base64 32`. Not needed for CLI-only usage. |
+| `CLAWCOUNTING_JWT_SECRET` | Auto-generated | No | JWT signing secret. If not set, a random secret is auto-generated on first run and stored in the DB settings table. Set this explicitly only if you need stable tokens across database resets. |
+| `CLAWCOUNTING_API_KEY` | — | No | API key for CLI commands that create accounting records (journal entries, reversals, period close). Alternative to `--api-key` flag. |
 
 You can set these as environment variables or place them in a `.env` file in the working directory. The `.env` file is loaded automatically.
 
@@ -40,30 +41,21 @@ clawcounting currencies list --json
 
 ### Option B: Server mode (REST API + web UI)
 
-The server **requires** `CLAWCOUNTING_JWT_SECRET` to be set. It will refuse to start without it.
+No configuration is required — just start the server:
 
 ```bash
-# 1. Set required environment variables
-export CLAWCOUNTING_DB=./clawcounting.db
-export CLAWCOUNTING_JWT_SECRET=$(openssl rand -base64 32)   # Generate a random secret
-export CLAWCOUNTING_PORT=3000                                # Optional, default is 3000
-
-# 2. Start the server
 clawcounting server
 # => Listening on 0.0.0.0:3000
 ```
 
-Alternatively, create a `.env` file so you don't need to set variables each time:
+The JWT secret is auto-generated on first run and stored in the database. Optionally, create a `.env` file to customize settings:
 
 ```bash
-# Create .env file
 cat > .env << 'EOF'
 CLAWCOUNTING_DB=./clawcounting.db
-CLAWCOUNTING_JWT_SECRET=your-random-secret-here
 CLAWCOUNTING_PORT=3000
 EOF
 
-# Then just run
 clawcounting server
 ```
 
@@ -76,8 +68,6 @@ The server provides:
 ### Using both interfaces
 
 CLI and server can use the same database file simultaneously. The CLI is useful for quick operations and scripting, while the server is needed for the web UI and remote API access.
-
-**Common issue**: If the server fails to start with a message about JWT secret, set `CLAWCOUNTING_JWT_SECRET`. This is only required for server mode, not CLI commands.
 
 ---
 
@@ -110,6 +100,19 @@ Response:
 
 **Save the `api_key` immediately — it is shown only once.**
 
+Use the API key for CLI write operations and HTTP API requests:
+```bash
+# CLI: set as env var (recommended)
+export CLAWCOUNTING_API_KEY=tsk_a1b2c3d4...
+clawcounting journal-entries create --file entry.json --json
+
+# CLI: pass as flag
+clawcounting journal-entries create --file entry.json --api-key tsk_a1b2c3d4... --json
+
+# HTTP API
+curl -H "Authorization: Bearer tsk_a1b2c3d4..." http://localhost:3000/api/v1/accounts
+```
+
 ### API
 
 ```bash
@@ -117,11 +120,6 @@ curl -X POST http://localhost:3000/api/v1/users/service-accounts \
   -H "Authorization: Bearer <ADMIN_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{"name": "AI Agent", "permissions": {}}'
-```
-
-Use the API key in subsequent requests:
-```
-Authorization: Bearer tsk_a1b2c3d4...
 ```
 
 ---
@@ -379,4 +377,5 @@ curl -X PATCH http://localhost:3000/api/v1/settings \
 - [ ] At least one open financial period
 - [ ] Chart of accounts with asset, liability, equity, revenue, and expense accounts
 - [ ] Retained earnings account configured in settings
-- [ ] Service account created (if using API)
+- [ ] Service account created with API key (required for CLI journal entries/reversals/period close, and for API access)
+- [ ] `CLAWCOUNTING_API_KEY` set in environment (if using CLI for accounting operations)

@@ -52,23 +52,28 @@
 		return unsub;
 	});
 
-	const publicPaths = ['/login', '/register'];
+	const publicPaths = ['/login', '/register', '/setup'];
 
-	onMount(() => {
-		authStore.initialize();
+	onMount(async () => {
+		console.log('[layout] onMount start, calling initialize()');
+		await authStore.initialize();
 
-		const unsubLoading = authStore.loading.subscribe((isLoading) => {
-			if (isLoading) return;
-			const unsub = authStore.user.subscribe((u) => {
-				const currentPath = window.location.pathname;
-				if (!u && !publicPaths.some((p) => currentPath.startsWith(p))) {
-					goto('/login');
-				}
-			});
-			unsub();
-		});
+		const currentPath = window.location.pathname;
+		const needsSetup = get(authStore.needsSetup);
+		const currentUser = get(authStore.user);
+		console.log('[layout] initialize done', { currentPath, needsSetup, user: currentUser });
 
-		return unsubLoading;
+		if (needsSetup) {
+			if (!currentPath.startsWith('/setup')) {
+				console.log('[layout] redirecting to /setup');
+				goto('/setup');
+			}
+		} else if (!currentUser) {
+			if (!publicPaths.some((p) => currentPath.startsWith(p))) {
+				console.log('[layout] redirecting to /login');
+				goto('/login');
+			}
+		}
 	});
 
 	function handleLogout() {

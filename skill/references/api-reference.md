@@ -509,11 +509,11 @@ Every API endpoint has a CLI equivalent. Add `--json` for machine-readable outpu
 | N/A (fiat shortcut) | `clawcounting currencies create-fiat USD` |
 | `POST /api/v1/accounts` | `clawcounting accounts create ...` |
 | `GET /api/v1/accounts` | `clawcounting accounts list` |
-| `POST /api/v1/journal-entries` | `clawcounting journal-entries create --file entry.json` |
+| `POST /api/v1/journal-entries` | `clawcounting journal-entries create --file entry.json --api-key $KEY` |
 | `GET /api/v1/journal-entries` | `clawcounting journal-entries list` |
-| `POST /api/v1/journal-entries/{id}/reverse` | `clawcounting journal-entries reverse <id>` |
+| `POST /api/v1/journal-entries/{id}/reverse` | `clawcounting journal-entries reverse <id> --api-key $KEY` |
 | `POST /api/v1/periods` | `clawcounting periods create ...` |
-| `POST /api/v1/periods/{id}/close` | `clawcounting periods close <id>` |
+| `POST /api/v1/periods/{id}/close` | `clawcounting periods close <id> --api-key $KEY` |
 | `GET /api/v1/reports/trial-balance` | `clawcounting reports trial-balance` |
 | `GET /api/v1/reports/balance-sheet` | `clawcounting reports balance-sheet` |
 | `GET /api/v1/reports/income-statement` | `clawcounting reports income-statement` |

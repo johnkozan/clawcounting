@@ -33,10 +33,6 @@ async fn main() {
         setup_connection(&config.db_path).expect("Failed to open database");
     run_migrations(&mut bootstrap_conn).expect("Failed to run migrations");
 
-    // Ensure system user exists
-    let system_user_id = settings_service::ensure_system_user(&bootstrap_conn)
-        .expect("Failed to create system user");
-
     // Ensure JWT secret: env var > DB > auto-generate
     let mut config = config;
     config.jwt_secret = Some(
@@ -44,6 +40,7 @@ async fn main() {
             .expect("Failed to initialize JWT secret"),
     );
 
+    let api_key = cli.api_key;
     match cli.command {
         Commands::Server => {
             // Close bootstrap connection, create pools
@@ -54,7 +51,6 @@ async fn main() {
             let state = AppState {
                 pools,
                 config: config.clone(),
-                system_user_id,
             };
             let app = build_router(state);
 
@@ -158,13 +154,16 @@ async fn main() {
                     json,
                 } => clawcounting::cli::periods::create(&bootstrap_conn, &name, &start, &end, json),
                 PeriodsCommands::Close { id, preview, json } => {
-                    clawcounting::cli::periods::close(
-                        &mut bootstrap_conn,
-                        &id,
-                        &system_user_id,
-                        preview,
-                        json,
-                    )
+                    clawcounting::cli::resolve_cli_user_id(&bootstrap_conn, api_key.as_deref())
+                        .and_then(|user_id| {
+                            clawcounting::cli::periods::close(
+                                &mut bootstrap_conn,
+                                &id,
+                                &user_id,
+                                preview,
+                                json,
+                            )
+                        })
                 }
             };
             if let Err(e) = result {
@@ -179,24 +178,30 @@ async fn main() {
                     clawcounting::cli::journal_entries::list(&bootstrap_conn, period.as_deref(), json)
                 }
                 JournalEntriesCommands::Create { file, json } => {
-                    clawcounting::cli::journal_entries::create_from_file(
-                        &mut bootstrap_conn,
-                        &file,
-                        &system_user_id,
-                        json,
-                    )
+                    clawcounting::cli::resolve_cli_user_id(&bootstrap_conn, api_key.as_deref())
+                        .and_then(|user_id| {
+                            clawcounting::cli::journal_entries::create_from_file(
+                                &mut bootstrap_conn,
+                                &file,
+                                &user_id,
+                                json,
+                            )
+                        })
                 }
                 JournalEntriesCommands::Get { id, json } => {
                     clawcounting::cli::journal_entries::get(&bootstrap_conn, &id, json)
                 }
                 JournalEntriesCommands::Reverse { id, date, json } => {
-                    clawcounting::cli::journal_entries::reverse(
-                        &mut bootstrap_conn,
-                        &id,
-                        &system_user_id,
-                        date.as_deref(),
-                        json,
-                    )
+                    clawcounting::cli::resolve_cli_user_id(&bootstrap_conn, api_key.as_deref())
+                        .and_then(|user_id| {
+                            clawcounting::cli::journal_entries::reverse(
+                                &mut bootstrap_conn,
+                                &id,
+                                &user_id,
+                                date.as_deref(),
+                                json,
+                            )
+                        })
                 }
             };
             if let Err(e) = result {

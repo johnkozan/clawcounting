@@ -55,7 +55,15 @@ export const auth = {
 		return res.data;
 	},
 	me: () =>
-		request<{ data: User }>('GET', `${AUTH_BASE}/me`)
+		request<{ data: User }>('GET', `${AUTH_BASE}/me`),
+	setupStatus: async () => {
+		const res = await request<{ data: { needs_setup: boolean } }>('GET', `${AUTH_BASE}/setup/status`);
+		return res.data;
+	},
+	setup: async (name: string, email: string, password: string) => {
+		const res = await request<{ data: { access_token: string; refresh_token: string; token_type: string; expires_in: number } }>('POST', `${AUTH_BASE}/setup`, { name, email, password });
+		return res.data;
+	}
 };
 
 // API endpoints

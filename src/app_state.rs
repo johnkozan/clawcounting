@@ -8,7 +8,6 @@ use crate::error::AppError;
 pub struct AppState {
     pub pools: DbPools,
     pub config: Config,
-    pub system_user_id: String,
 }
 
 impl AppState {
