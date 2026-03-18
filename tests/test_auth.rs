@@ -7,9 +7,9 @@ use serde_json::{Value, json};
 
 #[tokio::test]
 async fn setup_status_returns_needs_setup_on_fresh_db() {
-    // TestApp creates a test admin user, so we need a truly fresh DB
-    // to test needs_setup=true. Instead, test that the endpoint exists
-    // and returns needs_setup=false when users exist.
+    // TestApp creates an API-key-only admin user (service account),
+    // so needs_setup should still be true — only password-bearing
+    // (web) users satisfy the setup requirement.
     let app = common::TestApp::new().await;
 
     let resp = app
@@ -17,7 +17,7 @@ async fn setup_status_returns_needs_setup_on_fresh_db() {
         .get("/auth/setup/status")
         .await
         .json::<Value>();
-    assert_eq!(resp["data"]["needs_setup"], false);
+    assert_eq!(resp["data"]["needs_setup"], true);
 }
 
 #[tokio::test]

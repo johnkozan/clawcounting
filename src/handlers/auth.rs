@@ -98,12 +98,12 @@ pub async fn me(auth: AuthUser) -> Result<Json<DataResponse<UserResponse>>, AppE
 pub async fn setup_status(
     State(state): State<AppState>,
 ) -> Result<Json<DataResponse<SetupStatusResponse>>, AppError> {
-    let has_users = state
-        .with_read(|conn| user_service::has_any_users(conn))
+    let has_web_users = state
+        .with_read(|conn| user_service::has_any_web_users(conn))
         .await?;
     Ok(Json(DataResponse {
         data: SetupStatusResponse {
-            needs_setup: !has_users,
+            needs_setup: !has_web_users,
         },
     }))
 }
@@ -121,8 +121,9 @@ pub async fn setup(
 
     let user = state
         .with_write(move |conn| {
-            // Check that no users exist — this is the guard
-            if user_service::has_any_users(conn)? {
+            // Check that no web (password) users exist — this is the guard
+            // Service accounts don't count; they can't log in to the web UI
+            if user_service::has_any_web_users(conn)? {
                 return Err(AppError::ValidationError {
                     field: "setup".into(),
                     message: "Setup has already been completed".into(),

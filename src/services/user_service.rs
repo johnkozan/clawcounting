@@ -309,6 +309,17 @@ pub fn has_any_users(conn: &Connection) -> Result<bool, AppError> {
     Ok(count > 0)
 }
 
+/// Check if any human (password-bearing) users exist.
+/// Service accounts (API-key-only) don't count — they can't log in to the web UI.
+pub fn has_any_web_users(conn: &Connection) -> Result<bool, AppError> {
+    let count: i64 = conn.query_row(
+        "SELECT COUNT(*) FROM users WHERE password_hash IS NOT NULL",
+        [],
+        |row| row.get(0),
+    )?;
+    Ok(count > 0)
+}
+
 /// Resolve a raw API key to a user ID. Used by CLI commands that need auth.
 pub fn get_user_id_by_api_key(conn: &Connection, api_key: &str) -> Result<String, AppError> {
     let key_hash = hash_api_key(api_key);
