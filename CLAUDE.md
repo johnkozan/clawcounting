@@ -1,4 +1,4 @@
-# ClawCounting Accounting
+# ClawCounting
 
 Foundational double-entry bookkeeping engine for AI agents. Single Rust binary + single SQLite database.
 
@@ -95,7 +95,7 @@ tests/                 # Integration tests
 ## Environment
 
 - `CLAWCOUNTING_DB` — database file path (default: `./clawcounting.db`)
-- `CLAWCOUNTING_JWT_SECRET` — JWT signing secret (required for server mode)
+- `CLAWCOUNTING_JWT_SECRET` — JWT signing secret (optional; auto-generated and stored in DB settings table if not set)
 - `.env` file loaded via dotenvy (`.env.example` shipped, `.env` gitignored)
 
 ## Commands

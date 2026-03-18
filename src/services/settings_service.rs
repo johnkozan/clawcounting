@@ -1,3 +1,6 @@
+use base64::Engine;
+use base64::engine::general_purpose::STANDARD as BASE64;
+use rand::Rng;
 use rusqlite::{Connection, OptionalExtension, params};
 use uuid::Uuid;
 
@@ -25,6 +28,30 @@ pub fn set_setting(conn: &Connection, key: &str, value: &str) -> Result<(), AppE
 
 pub fn get_retained_earnings_account_id(conn: &Connection) -> Result<Option<String>, AppError> {
     get_setting(conn, "retained_earnings_account_id")
+}
+
+/// Ensure a JWT secret exists in the settings table.
+/// If `env_override` is Some, use that value. Otherwise, check the DB.
+/// If neither exists, generate a random 64-byte secret and persist it.
+/// Returns the JWT secret to use.
+pub fn ensure_jwt_secret(
+    conn: &Connection,
+    env_override: Option<&str>,
+) -> Result<String, AppError> {
+    if let Some(secret) = env_override {
+        return Ok(secret.to_string());
+    }
+
+    if let Some(secret) = get_setting(conn, "jwt_secret")? {
+        return Ok(secret);
+    }
+
+    let mut bytes = [0u8; 64];
+    rand::rng().fill(&mut bytes);
+    let secret = BASE64.encode(bytes);
+    set_setting(conn, "jwt_secret", &secret)?;
+    tracing::info!("Generated and stored JWT secret in database");
+    Ok(secret)
 }
 
 /// Ensure a system user exists for CLI and unauthenticated operations.

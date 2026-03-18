@@ -37,11 +37,15 @@ async fn main() {
     let system_user_id = settings_service::ensure_system_user(&bootstrap_conn)
         .expect("Failed to create system user");
 
+    // Ensure JWT secret: env var > DB > auto-generate
+    let mut config = config;
+    config.jwt_secret = Some(
+        settings_service::ensure_jwt_secret(&bootstrap_conn, config.jwt_secret.as_deref())
+            .expect("Failed to initialize JWT secret"),
+    );
+
     match cli.command {
         Commands::Server => {
-            // Validate JWT secret is present for server mode
-            config.require_jwt_secret();
-
             // Close bootstrap connection, create pools
             drop(bootstrap_conn);
             let pools =

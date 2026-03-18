@@ -29,10 +29,4 @@ impl Config {
             jwt_secret,
         }
     }
-
-    pub fn require_jwt_secret(&self) -> &str {
-        self.jwt_secret
-            .as_deref()
-            .expect("CLAWCOUNTING_JWT_SECRET must be set for server mode. Set it in .env or as an environment variable.")
-    }
 }
