@@ -60,7 +60,7 @@ Admin commands (user/currency/account/period creation, reports, settings) work w
 GET/POST/PATCH /api/v1/...
 Authorization: Bearer <API_KEY or JWT>
 ```
-Start with `clawcounting server`. JWT secret is auto-generated on first run. See [references/setup-guide.md](references/setup-guide.md) for full server setup.
+Start with `clawcounting serve`. JWT secret is auto-generated on first run. See [references/setup-guide.md](references/setup-guide.md) for full server setup.
 
 Both interfaces share identical validation and business logic.
 

@@ -1,7 +1,10 @@
-use axum::{Json, Router, routing::get};
+use axum::body::Body;
+use axum::http::{HeaderValue, StatusCode, Uri, header};
+use axum::response::{IntoResponse, Json, Response};
+use axum::{Router, routing::get};
+use rust_embed::Embed;
 use serde_json::{Value, json};
 use tower_http::cors::CorsLayer;
-use tower_http::services::{ServeDir, ServeFile};
 use tower_http::trace::TraceLayer;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
@@ -11,8 +14,39 @@ use crate::handlers;
 use crate::middleware::auth::require_auth;
 use crate::openapi::ApiDoc;
 
+#[derive(Embed)]
+#[folder = "frontend/build"]
+struct FrontendAssets;
+
 async fn health() -> Json<Value> {
     Json(json!({"status": "ok"}))
+}
+
+async fn serve_frontend(uri: Uri) -> Response {
+    let path = uri.path().trim_start_matches('/');
+
+    // Try the exact path first, then fall back to index.html (SPA routing)
+    let file = FrontendAssets::get(path)
+        .or_else(|| FrontendAssets::get("index.html"));
+
+    match file {
+        Some(content) => {
+            let mime = if path.is_empty() || !path.contains('.') {
+                "text/html".to_string()
+            } else {
+                mime_guess::from_path(path)
+                    .first_or_octet_stream()
+                    .to_string()
+            };
+
+            Response::builder()
+                .status(StatusCode::OK)
+                .header(header::CONTENT_TYPE, HeaderValue::from_str(&mime).unwrap())
+                .body(Body::from(content.data.into_owned()))
+                .unwrap()
+        }
+        None => StatusCode::NOT_FOUND.into_response(),
+    }
 }
 
 pub fn build_router(state: AppState) -> Router {
@@ -37,13 +71,6 @@ pub fn build_router(state: AppState) -> Router {
     let auth_routes = handlers::auth::public_router()
         .merge(handlers::auth::protected_router().route_layer(auth_middleware));
 
-    // Static frontend serving (SPA fallback)
-    let frontend_dir = std::env::var("CLAWCOUNTING_FRONTEND_DIR")
-        .unwrap_or_else(|_| "./frontend/build".to_string());
-    let index_file = format!("{}/index.html", frontend_dir);
-    let serve_frontend = ServeDir::new(&frontend_dir)
-        .not_found_service(ServeFile::new(&index_file));
-
     Router::new()
         .route("/health", get(health))
         .nest("/auth", auth_routes)
@@ -52,7 +79,7 @@ pub fn build_router(state: AppState) -> Router {
             SwaggerUi::new("/swagger-ui")
                 .url("/api/v1/openapi.json", ApiDoc::openapi()),
         )
-        .fallback_service(serve_frontend)
+        .fallback(serve_frontend)
         .layer(TraceLayer::new_for_http())
         .layer(CorsLayer::permissive())
         .with_state(state)

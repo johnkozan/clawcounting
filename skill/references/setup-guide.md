@@ -44,7 +44,7 @@ clawcounting currencies list --json
 No configuration is required — just start the server:
 
 ```bash
-clawcounting server
+clawcounting serve
 # => Listening on 0.0.0.0:3000
 ```
 
@@ -56,7 +56,7 @@ CLAWCOUNTING_DB=./clawcounting.db
 CLAWCOUNTING_PORT=3000
 EOF
 
-clawcounting server
+clawcounting serve
 ```
 
 The server provides:

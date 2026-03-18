@@ -18,7 +18,7 @@ async fn main() {
     let cli = Cli::parse();
 
     let default_level = match cli.command {
-        Commands::Server => "info",
+        Commands::Serve => "info",
         _ => "warn",
     };
     tracing_subscriber::fmt()
@@ -42,7 +42,7 @@ async fn main() {
 
     let api_key = cli.api_key;
     match cli.command {
-        Commands::Server => {
+        Commands::Serve => {
             // Close bootstrap connection, create pools
             drop(bootstrap_conn);
             let pools =

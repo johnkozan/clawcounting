@@ -43,7 +43,7 @@ pub fn resolve_cli_user_id(conn: &Connection, api_key: Option<&str>) -> Result<S
 #[derive(Subcommand)]
 pub enum Commands {
     /// Start the HTTP server
-    Server,
+    Serve,
 
     /// Manage accounts
     Accounts {

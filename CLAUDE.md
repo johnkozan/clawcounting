@@ -10,7 +10,7 @@ Foundational double-entry bookkeeping engine for AI agents. Single Rust binary +
 - **Frontend**: SvelteKit SPA (adapter-static) + Tailwind CSS + shadcn-svelte (in `frontend/`)
 - **API Docs**: utoipa + swagger-ui (auto-generated OpenAPI)
 - **Auth**: API keys (agents) + JWT (web users), permission-based
-- **CLI**: clap subcommands (`clawcounting server`, `clawcounting accounts list`, etc.)
+- **CLI**: clap subcommands (`clawcounting serve`, `clawcounting accounts list`, etc.)
 
 ## Architecture
 
@@ -103,6 +103,6 @@ tests/                 # Integration tests
 ```
 cargo build                    # build
 cargo test                     # run all tests
-cargo run -- server            # start HTTP server
+cargo run -- serve             # start HTTP server
 cargo run -- accounts list     # CLI usage
 ```
