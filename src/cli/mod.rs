@@ -12,7 +12,7 @@ use crate::error::AppError;
 use crate::services::user_service;
 
 #[derive(Parser)]
-#[command(name = "clawcounting", about = "Foundational double-entry bookkeeping engine for AI agents")]
+#[command(name = "clawcounting", version, about = "Foundational double-entry bookkeeping engine for AI agents")]
 pub struct Cli {
     /// Path to the SQLite database file
     #[arg(long = "db", global = true)]
@@ -43,7 +43,11 @@ pub fn resolve_cli_user_id(conn: &Connection, api_key: Option<&str>) -> Result<S
 #[derive(Subcommand)]
 pub enum Commands {
     /// Initialize a new database (creates file, runs migrations)
-    Init,
+    Init {
+        /// Output as JSON
+        #[arg(long)]
+        json: bool,
+    },
 
     /// Start the HTTP server
     Serve,
