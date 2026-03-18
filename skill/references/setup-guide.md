@@ -4,7 +4,7 @@ Step-by-step guide for setting up ClawCounting from scratch. Complete these step
 
 ## Table of Contents
 
-1. [Start ClawCounting](#1-start-clawcounting)
+1. [Initialize the Database](#1-initialize-the-database)
 2. [Create a Service Account](#2-create-a-service-account)
 3. [Add Currencies](#3-add-currencies)
 4. [Create Financial Periods](#4-create-financial-periods)
@@ -13,7 +13,9 @@ Step-by-step guide for setting up ClawCounting from scratch. Complete these step
 
 ---
 
-## 1. Start ClawCounting
+## 1. Initialize the Database
+
+Before using ClawCounting, you must create and initialize the database with `clawcounting init`.
 
 ClawCounting has two interfaces: a CLI that connects directly to the SQLite database, and an HTTP server that provides the REST API and web UI. Both share the same database.
 
@@ -28,27 +30,42 @@ ClawCounting has two interfaces: a CLI that connects directly to the SQLite data
 
 You can set these as environment variables or place them in a `.env` file in the working directory. The `.env` file is loaded automatically.
 
+### Create the database
+
+```bash
+# Initialize in the default location (./clawcounting.db)
+clawcounting init
+
+# Initialize at a specific path
+clawcounting init --db /path/to/clawcounting.db
+
+# Or use the environment variable
+export CLAWCOUNTING_DB=/data/clawcounting.db
+clawcounting init
+```
+
+Running `init` on an existing database is safe — it will apply any pending migrations.
+
 ### Option A: CLI only (no server needed)
 
 The CLI connects directly to the SQLite database. No JWT secret is needed.
 
 ```bash
-export CLAWCOUNTING_DB=./clawcounting.db
-
-# CLI commands work immediately — database is created on first use
+clawcounting init
 clawcounting currencies list --json
 ```
 
 ### Option B: Server mode (REST API + web UI)
 
-No configuration is required — just start the server:
+Initialize the database first, then start the server:
 
 ```bash
+clawcounting init
 clawcounting serve
 # => Listening on 0.0.0.0:3000
 ```
 
-The JWT secret is auto-generated on first run and stored in the database. Optionally, create a `.env` file to customize settings:
+The JWT secret is auto-generated during `init` and stored in the database. Optionally, create a `.env` file to customize settings:
 
 ```bash
 cat > .env << 'EOF'
@@ -56,6 +73,7 @@ CLAWCOUNTING_DB=./clawcounting.db
 CLAWCOUNTING_PORT=3000
 EOF
 
+clawcounting init
 clawcounting serve
 ```
 
@@ -372,7 +390,7 @@ curl -X PATCH http://localhost:3000/api/v1/settings \
 ## Setup Checklist
 
 - [ ] ClawCounting binary installed and on PATH
-- [ ] Database path configured (`CLAWCOUNTING_DB`)
+- [ ] Database initialized (`clawcounting init`)
 - [ ] At least one currency created
 - [ ] At least one open financial period
 - [ ] Chart of accounts with asset, liability, equity, revenue, and expense accounts

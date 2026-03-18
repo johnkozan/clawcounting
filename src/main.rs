@@ -28,6 +28,36 @@ async fn main() {
         .init();
     let config = Config::from_env(cli.db_path.as_deref());
 
+    // Handle `init` command separately — it creates the database
+    if matches!(cli.command, Commands::Init) {
+        if std::path::Path::new(&config.db_path).exists() {
+            // Database already exists — run any pending migrations
+            let mut conn =
+                setup_connection(&config.db_path).expect("Failed to open database");
+            run_migrations(&mut conn).expect("Failed to run migrations");
+            // Ensure JWT secret is initialized
+            settings_service::ensure_jwt_secret(&conn, config.jwt_secret.as_deref())
+                .expect("Failed to initialize JWT secret");
+            println!("Database already exists at {}. Migrations are up to date.", config.db_path);
+        } else {
+            let mut conn =
+                setup_connection(&config.db_path).expect("Failed to create database");
+            run_migrations(&mut conn).expect("Failed to run migrations");
+            settings_service::ensure_jwt_secret(&conn, config.jwt_secret.as_deref())
+                .expect("Failed to initialize JWT secret");
+            println!("Database initialized at {}", config.db_path);
+        }
+        return;
+    }
+
+    // All other commands require the database to already exist
+    if !std::path::Path::new(&config.db_path).exists() {
+        eprintln!("Error: Database not found at {}", config.db_path);
+        eprintln!("Run `clawcounting init` to create a new database.");
+        eprintln!("To use a database at a different location, pass --db <path> or set CLAWCOUNTING_DB.");
+        std::process::exit(1);
+    }
+
     // Bootstrap: open connection, set pragmas, register functions, run migrations
     let mut bootstrap_conn =
         setup_connection(&config.db_path).expect("Failed to open database");
@@ -42,6 +72,8 @@ async fn main() {
 
     let api_key = cli.api_key;
     match cli.command {
+        Commands::Init => unreachable!(), // handled above
+
         Commands::Serve => {
             // Close bootstrap connection, create pools
             drop(bootstrap_conn);

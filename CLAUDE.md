@@ -76,14 +76,6 @@ tests/                 # Integration tests
 - JSON fields: TEXT with JSON content (permissions, metadata)
 - Pragmas: `journal_mode=WAL`, `foreign_keys=ON`, `synchronous=NORMAL`, `busy_timeout=5000`
 
-## Startup Flow
-
-1. Open raw rusqlite connection
-2. Set pragmas
-3. Register custom SQLite functions (must happen before migrations — triggers reference them)
-4. Run refinery migrations
-5. Branch: server creates pools (with post_create hooks for pragmas + functions), CLI keeps direct connection
-
 ## Testing
 
 - Integration tests in `tests/` — each file is a separate test binary
@@ -103,6 +95,7 @@ tests/                 # Integration tests
 ```
 cargo build                    # build
 cargo test                     # run all tests
-cargo run -- serve             # start HTTP server
-cargo run -- accounts list     # CLI usage
+cargo run -- init              # initialize database
+cargo run -- serve             # start HTTP server (requires init first)
+cargo run -- accounts list     # CLI usage (requires init first)
 ```

@@ -41,7 +41,7 @@ clawcounting --version
 ```bash
 clawcounting <command> [--json]    # --json for machine-readable output
 ```
-The CLI connects directly to the SQLite database. No server needed. Set `CLAWCOUNTING_DB` to control the database path (default: `./clawcounting.db`).
+The CLI connects directly to the SQLite database. No server needed. Set `CLAWCOUNTING_DB` to control the database path (default: `./clawcounting.db`). The database must be initialized first with `clawcounting init`.
 
 Commands that create accounting records (journal entries, reversals, period close) require an API key for user attribution:
 ```bash
@@ -60,7 +60,7 @@ Admin commands (user/currency/account/period creation, reports, settings) work w
 GET/POST/PATCH /api/v1/...
 Authorization: Bearer <API_KEY or JWT>
 ```
-Start with `clawcounting serve`. JWT secret is auto-generated on first run. See [references/setup-guide.md](references/setup-guide.md) for full server setup.
+Initialize with `clawcounting init`, then start with `clawcounting serve`. See [references/setup-guide.md](references/setup-guide.md) for full server setup.
 
 Both interfaces share identical validation and business logic.
 
@@ -85,13 +85,14 @@ API responses include both raw amounts and `display_*` fields formatted with the
 
 Follow these steps in order. See [references/setup-guide.md](references/setup-guide.md) for detailed examples.
 
-1. **Start the server** or use CLI directly (both work with the same database)
-2. **Create a user account** — via web UI setup page (first visit) or `clawcounting users create` CLI
-3. **Create a service account** — `clawcounting users create-service-account` to get an API key for CLI write operations and agent access
-4. **Add currencies** — use `currencies create-fiat` for common fiat, manual create for crypto
-5. **Create a financial period** — define the date range for your fiscal period
-6. **Build chart of accounts** — create asset, liability, equity, revenue, and expense accounts
-7. **Configure settings** — set the retained earnings account (required for period close)
+1. **Initialize the database** — `clawcounting init` (creates the SQLite file and runs migrations)
+2. **Start the server** or use CLI directly (both work with the same database)
+3. **Create a user account** — via web UI setup page (first visit) or `clawcounting users create` CLI
+4. **Create a service account** — `clawcounting users create-service-account` to get an API key for CLI write operations and agent access
+5. **Add currencies** — use `currencies create-fiat` for common fiat, manual create for crypto
+6. **Create a financial period** — define the date range for your fiscal period
+7. **Build chart of accounts** — create asset, liability, equity, revenue, and expense accounts
+8. **Configure settings** — set the retained earnings account (required for period close)
 
 ## Day-to-Day Operations
 

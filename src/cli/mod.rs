@@ -42,6 +42,9 @@ pub fn resolve_cli_user_id(conn: &Connection, api_key: Option<&str>) -> Result<S
 
 #[derive(Subcommand)]
 pub enum Commands {
+    /// Initialize a new database (creates file, runs migrations)
+    Init,
+
     /// Start the HTTP server
     Serve,
 
