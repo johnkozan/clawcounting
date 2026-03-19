@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Lobster head - simplified for favicon -->
+  <circle cx="32" cy="32" r="30" fill="#e74c3c" />
+
+  <!-- Antennae -->
+  <path d="M22 24 Q14 8 8 4" stroke="#e74c3c" stroke-width="2" fill="none" stroke-linecap="round" />
+  <path d="M42 24 Q50 8 56 4" stroke="#e74c3c" stroke-width="2" fill="none" stroke-linecap="round" />
+  <circle cx="7" cy="3" r="2" fill="#ec7063" />
+  <circle cx="57" cy="3" r="2" fill="#ec7063" />
+
+  <!-- Eye stalks (drawn before eyes so eyes render on top) -->
+  <path d="M24 30 L20 12" stroke="#c0392b" stroke-width="4" stroke-linecap="butt" />
+  <path d="M40 30 L44 12" stroke="#c0392b" stroke-width="4" stroke-linecap="butt" />
+
+  <!-- Eyes -->
+  <circle cx="19" cy="15" r="6" fill="white" />
+  <circle cx="45" cy="15" r="6" fill="white" />
+
+  <!-- Glasses -->
+  <circle cx="19" cy="15" r="7" fill="none" stroke="#2c3e50" stroke-width="2" />
+  <circle cx="45" cy="15" r="7" fill="none" stroke="#2c3e50" stroke-width="2" />
+  <path d="M26 15 L38 15" stroke="#2c3e50" stroke-width="2" />
+
+  <!-- Pupils -->
+  <circle cx="21" cy="15" r="3" fill="#2c3e50" />
+  <circle cx="47" cy="15" r="3" fill="#2c3e50" />
+  <circle cx="22" cy="14" r="1.2" fill="white" />
+  <circle cx="48" cy="14" r="1.2" fill="white" />
+
+  <!-- Claws (simplified) -->
+  <path d="M8 36 Q2 28 6 24 Q10 30 8 36 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="1" />
+  <path d="M8 36 Q2 42 6 46 Q10 40 8 36 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="1" />
+  <path d="M56 36 Q62 28 58 24 Q54 30 56 36 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="1" />
+  <path d="M56 36 Q62 42 58 46 Q54 40 56 36 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="1" />
+
+  <!-- Arms to claws -->
+  <path d="M14 34 L8 36" stroke="#e74c3c" stroke-width="4" stroke-linecap="round" />
+  <path d="M50 34 L56 36" stroke="#e74c3c" stroke-width="4" stroke-linecap="round" />
+
+  <!-- Smile -->
+  <path d="M24 42 Q32 50 40 42" fill="none" stroke="#c0392b" stroke-width="2" stroke-linecap="round" />
+</svg>

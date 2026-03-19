@@ -73,6 +73,7 @@ fn build_frontend() {
 
     // Rerun if frontend source changes
     println!("cargo:rerun-if-changed=frontend/src/");
+    println!("cargo:rerun-if-changed=frontend/static/");
     println!("cargo:rerun-if-changed=frontend/package.json");
     println!("cargo:rerun-if-changed=frontend/svelte.config.js");
     println!("cargo:rerun-if-changed=frontend/vite.config.ts");

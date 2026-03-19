@@ -6,7 +6,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Card from '$lib/components/ui/card';
-	import { Landmark } from '@lucide/svelte';
+
 
 	let email = $state('');
 	let password = $state('');
@@ -39,9 +39,7 @@
 <div class="flex min-h-screen items-center justify-center bg-background px-4">
 	<Card.Root class="w-full max-w-sm">
 		<Card.Header class="text-center">
-			<div class="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
-				<Landmark class="h-6 w-6 text-primary-foreground" />
-			</div>
+			<img src="/logo.svg" alt="ClawCounting" class="mx-auto mb-2 h-24 w-24" />
 			<Card.Title class="text-2xl">ClawCounting</Card.Title>
 			<Card.Description>Sign in to your account</Card.Description>
 		</Card.Header>
@@ -60,6 +58,7 @@
 						placeholder="admin@example.com"
 						bind:value={email}
 						required
+						autofocus
 						autocomplete="email"
 					/>
 				</div>

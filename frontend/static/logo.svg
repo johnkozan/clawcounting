@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 80 360 300" width="400" height="333">
+  <!-- Tail segments -->
+  <ellipse cx="200" cy="330" rx="30" ry="12" fill="#c0392b" />
+  <ellipse cx="200" cy="315" rx="33" ry="13" fill="#d4433b" />
+  <ellipse cx="200" cy="298" rx="36" ry="14" fill="#e74c3c" />
+
+  <!-- Tail fan -->
+  <ellipse cx="200" cy="348" rx="22" ry="8" fill="#c0392b" />
+  <ellipse cx="182" cy="350" rx="14" ry="7" fill="#b03a2e" transform="rotate(-20 182 350)" />
+  <ellipse cx="218" cy="350" rx="14" ry="7" fill="#b03a2e" transform="rotate(20 218 350)" />
+
+  <!-- Body -->
+  <ellipse cx="200" cy="240" rx="55" ry="65" fill="#e74c3c" />
+  <ellipse cx="200" cy="235" rx="48" ry="55" fill="#ec7063" opacity="0.3" />
+
+  <!-- Body segments lines -->
+  <path d="M155 220 Q200 225 245 220" fill="none" stroke="#c0392b" stroke-width="1.5" />
+  <path d="M152 240 Q200 245 248 240" fill="none" stroke="#c0392b" stroke-width="1.5" />
+  <path d="M155 260 Q200 265 245 260" fill="none" stroke="#c0392b" stroke-width="1.5" />
+
+  <!-- Legs (3 pairs) -->
+  <!-- Left legs -->
+  <path d="M155 230 L120 250 L110 270" stroke="#e74c3c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M150 250 L118 268 L112 290" stroke="#e74c3c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M148 270 L120 286 L118 305" stroke="#e74c3c" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Right legs -->
+  <path d="M245 230 L280 250 L290 270" stroke="#e74c3c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M250 250 L282 268 L288 290" stroke="#e74c3c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M252 270 L280 286 L282 305" stroke="#e74c3c" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Arms -->
+  <!-- Left arm (holding calculator) -->
+  <path d="M155 210 L100 170 L70 140" stroke="#e74c3c" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Left claw -->
+  <path d="M70 140 Q50 115 40 125 Q30 135 55 145 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5" />
+  <path d="M70 140 Q50 160 42 148 Q34 136 55 145" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5" />
+
+  <!-- Calculator (held by left claw) -->
+  <g transform="rotate(-12 60 175)">
+    <rect x="30" y="138" width="56" height="74" rx="5" fill="#334155" />
+    <!-- Calculator screen -->
+    <rect x="35" y="144" width="46" height="18" rx="3" fill="#86efac" />
+    <text x="41" y="158" font-family="monospace" font-size="12" fill="#1e293b">1,250</text>
+    <!-- Calculator buttons row 1 -->
+    <rect x="36" y="168" width="11" height="9" rx="1.5" fill="#64748b" />
+    <rect x="50" y="168" width="11" height="9" rx="1.5" fill="#64748b" />
+    <rect x="64" y="168" width="11" height="9" rx="1.5" fill="#64748b" />
+    <!-- Calculator buttons row 2 -->
+    <rect x="36" y="181" width="11" height="9" rx="1.5" fill="#64748b" />
+    <rect x="50" y="181" width="11" height="9" rx="1.5" fill="#64748b" />
+    <rect x="64" y="181" width="11" height="9" rx="1.5" fill="#e74c3c" />
+    <!-- Calculator buttons row 3 -->
+    <rect x="36" y="194" width="11" height="9" rx="1.5" fill="#64748b" />
+    <rect x="50" y="194" width="11" height="9" rx="1.5" fill="#64748b" />
+    <rect x="64" y="194" width="11" height="9" rx="1.5" fill="#3b82f6" />
+  </g>
+
+  <!-- Right arm -->
+  <path d="M245 210 L300 170 L330 140" stroke="#e74c3c" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Right claw -->
+  <path d="M330 140 Q350 115 360 125 Q370 135 345 145 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5" />
+  <path d="M330 140 Q350 160 358 148 Q366 136 345 145" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5" />
+
+  <!-- Ledger book (held by right claw) -->
+  <g transform="rotate(8 330 175)">
+    <rect x="295" y="130" width="70" height="90" rx="4" fill="#2c3e50" />
+    <rect x="299" y="134" width="62" height="82" rx="3" fill="#ecf0f1" />
+    <!-- Ledger lines -->
+    <line x1="305" y1="150" x2="355" y2="150" stroke="#bdc3c7" stroke-width="1.2" />
+    <line x1="305" y1="163" x2="355" y2="163" stroke="#bdc3c7" stroke-width="1.2" />
+    <line x1="305" y1="176" x2="355" y2="176" stroke="#bdc3c7" stroke-width="1.2" />
+    <line x1="305" y1="189" x2="355" y2="189" stroke="#bdc3c7" stroke-width="1.2" />
+    <line x1="305" y1="202" x2="355" y2="202" stroke="#bdc3c7" stroke-width="1.2" />
+    <!-- Ledger column divider -->
+    <line x1="335" y1="137" x2="335" y2="213" stroke="#bdc3c7" stroke-width="1.2" />
+    <!-- Dollar signs -->
+    <text x="309" y="160" font-family="monospace" font-size="10" fill="#27ae60">$</text>
+    <text x="309" y="173" font-family="monospace" font-size="10" fill="#27ae60">$</text>
+    <text x="309" y="186" font-family="monospace" font-size="10" fill="#e74c3c">$</text>
+    <text x="309" y="199" font-family="monospace" font-size="10" fill="#27ae60">$</text>
+  </g>
+
+  <!-- Head -->
+  <ellipse cx="200" cy="180" rx="50" ry="42" fill="#e74c3c" />
+
+
+  <!-- Eye stalks -->
+  <path d="M178 170 L170 148" stroke="#e74c3c" stroke-width="6" stroke-linecap="round" />
+  <path d="M222 170 L230 148" stroke="#e74c3c" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Eyes (white) -->
+  <circle cx="168" cy="143" r="14" fill="white" />
+  <circle cx="232" cy="143" r="14" fill="white" />
+
+  <!-- Glasses frames -->
+  <circle cx="168" cy="143" r="15" fill="none" stroke="#2c3e50" stroke-width="2.5" />
+  <circle cx="232" cy="143" r="15" fill="none" stroke="#2c3e50" stroke-width="2.5" />
+  <!-- Glasses bridge -->
+  <path d="M183 143 L217 143" stroke="#2c3e50" stroke-width="2.5" fill="none" />
+  <!-- Glasses arms -->
+  <path d="M153 143 L145 148" stroke="#2c3e50" stroke-width="2" fill="none" />
+  <path d="M247 143 L255 148" stroke="#2c3e50" stroke-width="2" fill="none" />
+
+  <!-- Pupils -->
+  <circle cx="172" cy="144" r="6" fill="#2c3e50" />
+  <circle cx="236" cy="144" r="6" fill="#2c3e50" />
+  <!-- Eye shine -->
+  <circle cx="174" cy="141" r="2.5" fill="white" />
+  <circle cx="238" cy="141" r="2.5" fill="white" />
+
+  <!-- Smile -->
+  <path d="M185 195 Q200 208 215 195" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round" />
+
+  <!-- Antennae -->
+  <path d="M180 165 Q160 120 140 95" stroke="#e74c3c" stroke-width="3" fill="none" stroke-linecap="round" />
+  <path d="M220 165 Q240 120 260 95" stroke="#e74c3c" stroke-width="3" fill="none" stroke-linecap="round" />
+  <circle cx="138" cy="93" r="4" fill="#ec7063" />
+  <circle cx="262" cy="93" r="4" fill="#ec7063" />
+
+  <!-- Bowtie -->
+  <polygon points="188,212 200,218 212,212 212,224 200,218 188,224" fill="#2c3e50" />
+  <circle cx="200" cy="218" r="3" fill="#34495e" />
+</svg>

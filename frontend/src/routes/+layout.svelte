@@ -115,7 +115,7 @@
 				: '-translate-x-full'}"
 		>
 			<div class="flex h-14 items-center gap-2 border-b border-border px-4">
-				<Landmark class="h-6 w-6 text-primary" />
+				<img src="/logo.svg" alt="ClawCounting" class="h-12 w-12" />
 				<span class="text-lg font-semibold">ClawCounting</span>
 				<button class="ml-auto lg:hidden" onclick={() => (sidebarOpen = false)}>
 					<X class="h-5 w-5" />
@@ -183,6 +183,7 @@
 				<button onclick={() => (sidebarOpen = true)}>
 					<Menu class="h-5 w-5" />
 				</button>
+				<img src="/logo.svg" alt="ClawCounting" class="h-6 w-6" />
 				<span class="font-semibold">ClawCounting</span>
 			</header>
 
