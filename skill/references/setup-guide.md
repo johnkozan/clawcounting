@@ -65,6 +65,26 @@ clawcounting serve
 # => Listening on 0.0.0.0:3000
 ```
 
+### Running the server in the background (for AI agents)
+
+When an AI agent needs to start the server as part of a workflow, use `nohup` to detach the process and poll the health endpoint for readiness:
+
+```bash
+# Start server in background (survives shell exit)
+nohup clawcounting serve > /tmp/clawcounting.log 2>&1 &
+echo $! > /tmp/clawcounting.pid
+
+# Wait for the server to be ready
+until curl -sf http://localhost:3000/health > /dev/null 2>&1; do sleep 0.5; done
+
+# Server is now accepting requests
+```
+
+To stop the server later:
+```bash
+kill "$(cat /tmp/clawcounting.pid)"
+```
+
 The JWT secret is auto-generated during `init` and stored in the database. Optionally, create a `.env` file to customize settings:
 
 ```bash
