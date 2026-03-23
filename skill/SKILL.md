@@ -89,7 +89,7 @@ Follow these steps in order. See [references/setup-guide.md](references/setup-gu
 2. **Start the server** or use CLI directly (both work with the same database)
 3. **Create a user account** — via web UI setup page (first visit) or `clawcounting users create` CLI
 4. **Create a service account** — `clawcounting users create-service-account` to get an API key for CLI write operations and agent access
-5. **Add currencies** — use `currencies create-fiat` for common fiat, manual create for crypto
+5. **Add currencies** — via the web UI currency picker (fiat with flags, popular crypto tokens with logos, token list import, or custom), or CLI (`currencies create-fiat` for fiat, `currencies create` for crypto)
 6. **Create a financial period** — define the date range for your fiscal period
 7. **Build chart of accounts** — create asset, liability, equity, revenue, and expense accounts
 8. **Configure settings** — set the retained earnings account (required for period close)

@@ -9,7 +9,10 @@ fn main() {
     // --- Step 1: Generate fiat-currencies.json ---
     generate_fiat_json();
 
-    // --- Step 2: Build the frontend ---
+    // --- Step 2: Fetch crypto-tokens.json from Uniswap token list ---
+    fetch_crypto_tokens_json();
+
+    // --- Step 3: Build the frontend ---
     build_frontend();
 }
 
@@ -60,6 +63,77 @@ fn generate_fiat_json() {
     fs::write(out_path, json).expect("Failed to write fiat-currencies.json");
 
     println!("cargo:warning=Generated fiat-currencies.json ({} currencies)", currencies.len());
+}
+
+fn fetch_crypto_tokens_json() {
+    let out_path = Path::new("frontend/src/lib/data/crypto-tokens.json");
+
+    // Only fetch if the output doesn't exist (delete the file to refresh)
+    if out_path.exists() {
+        return;
+    }
+
+    if let Some(parent) = out_path.parent() {
+        fs::create_dir_all(parent).expect("Failed to create crypto-tokens.json output directory");
+    }
+
+    println!("cargo:warning=Fetching Uniswap Default token list...");
+
+    let body: String = match ureq::get("https://tokens.uniswap.org").call() {
+        Ok(mut resp) => resp.body_mut().read_to_string().expect("Failed to read response body"),
+        Err(e) => {
+            println!("cargo:warning=Failed to fetch token list ({e}), skipping crypto-tokens.json generation");
+            return;
+        }
+    };
+
+    let token_list: serde_json::Value =
+        serde_json::from_str(&body).expect("Failed to parse token list JSON");
+
+    #[derive(serde::Serialize)]
+    struct CryptoToken {
+        code: String,
+        name: String,
+        symbol: String,
+        asset_scale: u64,
+        caip19_id: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        logo_uri: Option<String>,
+    }
+
+    let mut tokens: Vec<CryptoToken> = token_list["tokens"]
+        .as_array()
+        .expect("tokens field is not an array")
+        .iter()
+        .filter(|t| t["chainId"].as_u64() == Some(1)) // Ethereum mainnet only
+        .map(|t| {
+            let address = t["address"].as_str().unwrap_or_default();
+            let symbol = t["symbol"].as_str().unwrap_or_default().to_string();
+            CryptoToken {
+                code: symbol.clone(),
+                name: t["name"].as_str().unwrap_or_default().to_string(),
+                symbol,
+                asset_scale: t["decimals"].as_u64().unwrap_or(18),
+                caip19_id: format!("eip155:1/erc20:{address}"),
+                logo_uri: t["logoURI"].as_str().map(|s| s.to_string()),
+            }
+        })
+        .collect();
+
+    tokens.sort_by(|a, b| a.code.cmp(&b.code));
+
+    // Deduplicate by symbol (keep first occurrence)
+    let mut seen = std::collections::HashSet::new();
+    tokens.retain(|t| seen.insert(t.code.clone()));
+
+    let json =
+        serde_json::to_string_pretty(&tokens).expect("Failed to serialize crypto tokens");
+    fs::write(out_path, json).expect("Failed to write crypto-tokens.json");
+
+    println!(
+        "cargo:warning=Generated crypto-tokens.json ({} tokens)",
+        tokens.len()
+    );
 }
 
 fn build_frontend() {

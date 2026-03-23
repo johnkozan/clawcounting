@@ -1,0 +1,178 @@
+[
+  {
+    "code": "BTC",
+    "name": "Bitcoin",
+    "symbol": "BTC",
+    "asset_scale": 8,
+    "caip19_id": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+    "logo_uri": "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png"
+  },
+  {
+    "code": "ETH",
+    "name": "Ether",
+    "symbol": "ETH",
+    "asset_scale": 18,
+    "caip19_id": "eip155:1/slip44:60",
+    "logo_uri": "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png"
+  },
+  {
+    "code": "SOL",
+    "name": "Solana",
+    "symbol": "SOL",
+    "asset_scale": 9,
+    "caip19_id": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    "logo_uri": "https://assets.coingecko.com/coins/images/4128/thumb/solana.png"
+  },
+  {
+    "code": "BNB",
+    "name": "BNB",
+    "symbol": "BNB",
+    "asset_scale": 18,
+    "caip19_id": "eip155:56/slip44:714",
+    "logo_uri": "https://assets.coingecko.com/coins/images/825/thumb/bnb-icon2_2x.png"
+  },
+  {
+    "code": "AVAX",
+    "name": "Avalanche",
+    "symbol": "AVAX",
+    "asset_scale": 18,
+    "caip19_id": "eip155:43114/slip44:9005",
+    "logo_uri": "https://assets.coingecko.com/coins/images/12559/thumb/Avalanche_Circle_RedWhite_Trans.png"
+  },
+  {
+    "code": "MATIC",
+    "name": "Polygon",
+    "symbol": "MATIC",
+    "asset_scale": 18,
+    "caip19_id": "eip155:137/slip44:966",
+    "logo_uri": "https://assets.coingecko.com/coins/images/4713/thumb/polygon.png"
+  },
+  {
+    "code": "DOT",
+    "name": "Polkadot",
+    "symbol": "DOT",
+    "asset_scale": 10,
+    "caip19_id": "polkadot:91b171bb158e2d3848fa23a9f1c25182/slip44:354",
+    "logo_uri": "https://assets.coingecko.com/coins/images/12171/thumb/polkadot.png"
+  },
+  {
+    "code": "ADA",
+    "name": "Cardano",
+    "symbol": "ADA",
+    "asset_scale": 6,
+    "caip19_id": "cip34:1/slip44:1815",
+    "logo_uri": "https://assets.coingecko.com/coins/images/975/thumb/cardano.png"
+  },
+  {
+    "code": "ATOM",
+    "name": "Cosmos",
+    "symbol": "ATOM",
+    "asset_scale": 6,
+    "caip19_id": "cosmos:cosmoshub-4/slip44:118",
+    "logo_uri": "https://assets.coingecko.com/coins/images/1481/thumb/cosmos_hub.png"
+  },
+  {
+    "code": "NEAR",
+    "name": "NEAR Protocol",
+    "symbol": "NEAR",
+    "asset_scale": 24,
+    "caip19_id": "near:mainnet/slip44:397",
+    "logo_uri": "https://assets.coingecko.com/coins/images/10365/thumb/near.jpg"
+  },
+  {
+    "code": "FTM",
+    "name": "Fantom",
+    "symbol": "FTM",
+    "asset_scale": 18,
+    "caip19_id": "eip155:250/slip44:1007",
+    "logo_uri": "https://assets.coingecko.com/coins/images/4001/thumb/Fantom_round.png"
+  },
+  {
+    "code": "ALGO",
+    "name": "Algorand",
+    "symbol": "ALGO",
+    "asset_scale": 6,
+    "caip19_id": "algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73k/slip44:283",
+    "logo_uri": "https://assets.coingecko.com/coins/images/4380/thumb/download.png"
+  },
+  {
+    "code": "XTZ",
+    "name": "Tezos",
+    "symbol": "XTZ",
+    "asset_scale": 6,
+    "caip19_id": "tezos:NetXdQprcVkpaWU/slip44:1729",
+    "logo_uri": "https://assets.coingecko.com/coins/images/976/thumb/Tezos-logo.png"
+  },
+  {
+    "code": "XRP",
+    "name": "XRP",
+    "symbol": "XRP",
+    "asset_scale": 6,
+    "caip19_id": "xrpl:0/slip44:144",
+    "logo_uri": "https://assets.coingecko.com/coins/images/44/thumb/xrp-symbol-white-128.png"
+  },
+  {
+    "code": "LTC",
+    "name": "Litecoin",
+    "symbol": "LTC",
+    "asset_scale": 8,
+    "caip19_id": "bip122:12a765e31ffd4059bada1e25190f6e98/slip44:2",
+    "logo_uri": "https://assets.coingecko.com/coins/images/2/thumb/litecoin.png"
+  },
+  {
+    "code": "DOGE",
+    "name": "Dogecoin",
+    "symbol": "DOGE",
+    "asset_scale": 8,
+    "caip19_id": "bip122:1a91e3dace36e2be3bf030a65679fe56/slip44:3",
+    "logo_uri": "https://assets.coingecko.com/coins/images/5/thumb/dogecoin.png"
+  },
+  {
+    "code": "TRX",
+    "name": "TRON",
+    "symbol": "TRX",
+    "asset_scale": 6,
+    "caip19_id": "tron:mainnet/slip44:195",
+    "logo_uri": "https://assets.coingecko.com/coins/images/1094/thumb/tron-logo.png"
+  },
+  {
+    "code": "ARB",
+    "name": "Arbitrum",
+    "symbol": "ARB",
+    "asset_scale": 18,
+    "caip19_id": "eip155:42161/slip44:9001",
+    "logo_uri": "https://assets.coingecko.com/coins/images/16547/thumb/photo_2023-03-29_21.47.00.jpeg"
+  },
+  {
+    "code": "OP",
+    "name": "Optimism",
+    "symbol": "OP",
+    "asset_scale": 18,
+    "caip19_id": "eip155:10/slip44:614",
+    "logo_uri": "https://assets.coingecko.com/coins/images/25244/thumb/Optimism.png"
+  },
+  {
+    "code": "SUI",
+    "name": "Sui",
+    "symbol": "SUI",
+    "asset_scale": 9,
+    "caip19_id": "sui:mainnet/slip44:784",
+    "logo_uri": "https://assets.coingecko.com/coins/images/26375/thumb/sui_asset.jpeg"
+  },
+  {
+    "code": "APT",
+    "name": "Aptos",
+    "symbol": "APT",
+    "asset_scale": 8,
+    "caip19_id": "aptos:1/slip44:637",
+    "logo_uri": "https://assets.coingecko.com/coins/images/26455/thumb/aptos_round.png"
+  },
+  {
+    "code": "SEI",
+    "name": "Sei",
+    "symbol": "SEI",
+    "asset_scale": 6,
+    "caip19_id": "cosmos:pacific-1/slip44:19000",
+    "logo_uri": "https://assets.coingecko.com/coins/images/28205/thumb/Sei_Logo_-_Transparent.png"
+  }
+]

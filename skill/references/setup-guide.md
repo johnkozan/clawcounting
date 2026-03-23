@@ -166,7 +166,17 @@ curl -X POST http://localhost:3000/api/v1/users/service-accounts \
 
 Every account requires a currency. Add currencies before creating accounts.
 
-### Fiat currencies (quick method)
+### Web UI
+
+Click **Add Currency** on the Currencies page. The dialog provides:
+
+- **Fiat tab** — searchable picker of all ISO 4217 currencies with country flags. Click to add.
+- **Crypto tab** with three sub-tabs:
+  - **Popular** — searchable picker of native chains (BTC, ETH, SOL, etc.) and ~400 ERC-20 tokens from the Uniswap Default token list, with logos.
+  - **Import List** — import tokens from any Uniswap Token List standard JSON (paste a URL or upload a file). Shows a preview table with checkboxes for bulk-adding.
+  - **Custom** — manual form for any currency not covered by the built-in lists.
+
+### Fiat currencies (CLI quick method)
 
 Use `create-fiat` with an ISO 4217 code — ClawCounting auto-fills name, symbol, asset_scale, and CAIP-19:
 
@@ -191,7 +201,7 @@ Response:
 
 Common fiat codes: `USD`, `EUR`, `GBP`, `JPY`, `CAD`, `AUD`, `CHF`.
 
-### Crypto currencies (manual)
+### Crypto currencies (CLI manual)
 
 ```bash
 clawcounting currencies create \

@@ -19,7 +19,8 @@ Thumbs.db
 !.env.test
 
 # Generated data (build.rs)
-/src/lib/data/
+/src/lib/data/fiat-currencies.json
+/src/lib/data/crypto-tokens.json
 
 # Vite
 vite.config.js.timestamp-*

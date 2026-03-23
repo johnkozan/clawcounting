@@ -8,6 +8,7 @@ default-run = "clawcounting"
 iso_currency = { version = "0.4", features = ["iterator"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+ureq = "3"
 
 [dependencies]
 axum = "0.8"
