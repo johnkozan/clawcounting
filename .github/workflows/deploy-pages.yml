@@ -28,6 +28,7 @@ jobs:
       - name: Build site
         run: |
           mkdir -p _site
+          echo 'clawcounting.com' > _site/CNAME
           cp website/index.html _site/
           cp website/style.css _site/
           cp frontend/static/logo.svg _site/
