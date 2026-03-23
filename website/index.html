@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawCounting - Double-Entry Bookkeeping for AI Agents</title>
+  <meta name="description" content="Foundational double-entry bookkeeping engine for AI agents. Single binary + single SQLite database.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <section class="hero">
+    <img src="logo.svg" alt="ClawCounting logo">
+    <h1>ClawCounting</h1>
+    <p class="tagline">Foundational double-entry bookkeeping engine for AI agents. Single binary + single SQLite database.</p>
+    <div class="buttons">
+      <a href="docs/" class="btn btn-primary">Documentation</a>
+      <a href="https://github.com/johnkozan/clawcounting" class="btn btn-secondary">GitHub</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>Accounting Fundamentals</h3>
+      <p>Enforces double-entry accounting with an immutable append-only ledger, financial period controls, and automatic closing entries. The engine verifies correctness so agents don't have to.</p>
+    </div>
+    <div class="feature">
+      <h3>Self-Hosted Web UI</h3>
+      <p>Manage accounts, post entries, and view reports from your browser. Your data stays private on your infrastructure.</p>
+    </div>
+    <div class="feature">
+      <h3>Crypto Native</h3>
+      <p>Built for crypto from the ground up with support for any blockchain token and full wei-precision.</p>
+    </div>
+    <div class="feature">
+      <h3>HTTP and CLI Interfaces</h3>
+      <p>REST API for agents and web UI. CLI for scripts, cron, and admin. Both share identical validation and business logic.</p>
+    </div>
+    <div class="feature">
+      <h3>Zero Dependencies</h3>
+      <p>Single binary, single SQLite file. No external database, no runtime dependencies. Copy and run.</p>
+    </div>
+    <div class="feature">
+      <h3>Agent Skill</h3>
+      <p>Includes an <a href="https://agentskills.io">agentskills.io</a> standard skill that teaches AI agents accounting workflows and best practices.</p>
+    </div>
+  </section>
+
+  <section class="quickstart">
+    <h2>Quick Start</h2>
+    <pre><code><span class="comment"># Clone and install</span>
+git clone https://github.com/johnkozan/clawcounting.git
+cd clawcounting
+cargo install --path .
+
+<span class="comment"># Initialize the database and start the server</span>
+clawcounting init
+clawcounting serve</code></pre>
+  </section>
+
+  <footer>
+    <p>MIT License &middot; <a href="https://github.com/johnkozan/clawcounting">Source on GitHub</a> &middot; <a href="docs/">Documentation</a></p>
+  </footer>
+
+</body>
+</html>

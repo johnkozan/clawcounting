@@ -1,0 +1,12 @@
+[book]
+title = "ClawCounting Documentation"
+authors = ["John Kozan"]
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+
+[output.html]
+git-repository-url = "https://github.com/johnkozan/clawcounting"
+edit-url-template = "https://github.com/johnkozan/clawcounting/edit/main/docs/{path}"
