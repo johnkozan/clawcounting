@@ -10,3 +10,4 @@ build-dir = "book"
 [output.html]
 git-repository-url = "https://github.com/johnkozan/clawcounting"
 edit-url-template = "https://github.com/johnkozan/clawcounting/edit/main/docs/{path}"
+additional-js = ["goatcounter.js"]
