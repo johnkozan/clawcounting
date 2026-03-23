@@ -6,7 +6,10 @@
 
 <p align="center">Foundational double-entry bookkeeping engine for AI agents. Single binary + single SQLite database.</p>
 
-Designed as a platform, not an end-user application -- it provides the primitives (currencies, accounts, journal entries, periods, balances, reports) that more complex systems are built on top of. Consuming systems -- whether AI agents, ERPs, invoicing systems, or custom business logic -- use the API or CLI to build domain-specific workflows.
+> [!WARNING]
+> This software is under active development and is not suitable for production use at this time.
+
+Provides the accounting primitives -- currencies, accounts, journal entries, periods, balances, reports -- that AI agents and other systems use to build domain-specific workflows.
 
 ## Features
 
@@ -14,12 +17,12 @@ Designed as a platform, not an end-user application -- it provides the primitive
 - **Immutable journal** -- journal entries are append-only; corrections via reversing entries only
 - **Financial periods** -- fiscal year management with permanent close, automatic closing entries (revenue/expense zeroing into retained earnings)
 - **Subledger support** -- control accounts with per-entity sub-accounts (AR/AP by customer/vendor)
-- **Multi-currency** -- fiat (ISO 4217) and crypto (ERC-20, native coins) via CAIP-19 identifiers, with full wei-precision (i128 amounts)
+- **Multi-currency** -- fiat and crypto with full wei-precision
 - **Two interfaces** -- REST API (for agents and web UI) and CLI (for scripts, cron, admin) sharing the same service layer
-- **Built-in web UI** -- SvelteKit SPA embedded in the binary
+- **Built-in web UI** -- self-hosted dashboard embedded in the binary
 - **OpenAPI docs** -- auto-generated spec with Swagger UI at `/swagger-ui`
 - **Agent Skill** -- [agentskills.io](https://agentskills.io) standard skill for teaching AI agents accounting workflows
-- **Zero deployment overhead** -- no Docker, no external database servers, no runtime dependencies
+- **Zero deployment overhead** -- no external database servers, no runtime dependencies
 
 ## Quick Start
 
