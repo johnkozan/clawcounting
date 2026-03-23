@@ -85,6 +85,12 @@
   <ellipse cx="200" cy="180" rx="50" ry="42" fill="#e74c3c" />
 
 
+  <!-- Antennae (behind eyes) -->
+  <path d="M180 165 Q160 120 140 95" stroke="#e74c3c" stroke-width="3" fill="none" stroke-linecap="round" />
+  <path d="M220 165 Q240 120 260 95" stroke="#e74c3c" stroke-width="3" fill="none" stroke-linecap="round" />
+  <circle cx="138" cy="93" r="4" fill="#ec7063" />
+  <circle cx="262" cy="93" r="4" fill="#ec7063" />
+
   <!-- Eye stalks -->
   <path d="M178 170 L170 148" stroke="#e74c3c" stroke-width="6" stroke-linecap="round" />
   <path d="M222 170 L230 148" stroke="#e74c3c" stroke-width="6" stroke-linecap="round" />
@@ -111,12 +117,6 @@
 
   <!-- Smile -->
   <path d="M185 195 Q200 208 215 195" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round" />
-
-  <!-- Antennae -->
-  <path d="M180 165 Q160 120 140 95" stroke="#e74c3c" stroke-width="3" fill="none" stroke-linecap="round" />
-  <path d="M220 165 Q240 120 260 95" stroke="#e74c3c" stroke-width="3" fill="none" stroke-linecap="round" />
-  <circle cx="138" cy="93" r="4" fill="#ec7063" />
-  <circle cx="262" cy="93" r="4" fill="#ec7063" />
 
   <!-- Bowtie -->
   <polygon points="188,212 200,218 212,212 212,224 200,218 188,224" fill="#2c3e50" />
