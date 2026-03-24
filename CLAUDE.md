@@ -87,6 +87,7 @@ tests/                 # Integration tests
 ## Environment
 
 - `CLAWCOUNTING_DB` — database file path (default: `./clawcounting.db`)
+- `CLAWCOUNTING_HOST` — bind address (default: `127.0.0.1`; set to `0.0.0.0` for Docker/network access)
 - `CLAWCOUNTING_JWT_SECRET` — JWT signing secret (optional; auto-generated and stored in DB settings table if not set)
 - `.env` file loaded via dotenvy (`.env.example` shipped, `.env` gitignored)
 

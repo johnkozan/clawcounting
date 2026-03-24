@@ -67,6 +67,7 @@ impl TestApp {
         let pools = DbPools::new(&db_path, 2).expect("Failed to create test pools");
         let config = Config {
             db_path: db_path.clone(),
+            host: "127.0.0.1".into(),
             port: 0,
             jwt_secret: Some("test-secret".into()),
         };
@@ -101,6 +102,7 @@ impl TestApp {
         let pools = DbPools::new(&db_path, 2).expect("Failed to create test pools");
         let config = Config {
             db_path: db_path.clone(),
+            host: "127.0.0.1".into(),
             port: 0,
             jwt_secret: Some("test-secret".into()),
         };

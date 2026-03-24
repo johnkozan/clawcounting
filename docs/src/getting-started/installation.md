@@ -34,6 +34,7 @@ ClawCounting works out of the box with sensible defaults -- no configuration fil
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `CLAWCOUNTING_DB` | `./clawcounting.db` | SQLite database file path |
+| `CLAWCOUNTING_HOST` | `127.0.0.1` | Address to bind the HTTP server to. Set to `0.0.0.0` to listen on all interfaces. |
 | `CLAWCOUNTING_PORT` | `3000` | HTTP server port |
 | `CLAWCOUNTING_JWT_SECRET` | Auto-generated | JWT signing secret. Auto-generated and stored in DB if not set. |
 | `CLAWCOUNTING_API_KEY` | -- | API key for CLI write operations. Alternative to `--api-key` flag. |
