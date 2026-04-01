@@ -89,10 +89,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Download Linux amd64 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: clawcounting-x86_64-unknown-linux-gnu
+          path: docker-build/amd64
+
+      - name: Download Linux arm64 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: clawcounting-aarch64-unknown-linux-gnu
+          path: docker-build/arm64
+
+      - name: Extract binaries
+        run: |
+          cd docker-build/amd64 && tar xzf *.tar.gz && rm *.tar.gz
+          cd ../arm64 && tar xzf *.tar.gz && rm *.tar.gz
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Set up QEMU (for ARM builds)
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Log in to GHCR
@@ -106,17 +123,30 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker image
+      - name: Build and push amd64
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: docker-build/amd64
+          file: Dockerfile.release
           push: true
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            ghcr.io/johnkozan/clawcounting:${{ steps.version.outputs.version }}
-            ghcr.io/johnkozan/clawcounting:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+          tags: ghcr.io/johnkozan/clawcounting:${{ steps.version.outputs.version }}-amd64
+
+      - name: Build and push arm64
+        uses: docker/build-push-action@v6
+        with:
+          context: docker-build/arm64
+          file: Dockerfile.release
+          push: true
+          platforms: linux/arm64
+          tags: ghcr.io/johnkozan/clawcounting:${{ steps.version.outputs.version }}-arm64
+
+      - name: Create and push multi-arch manifest
+        run: |
+          docker buildx imagetools create -t ghcr.io/johnkozan/clawcounting:${{ steps.version.outputs.version }} \
+            -t ghcr.io/johnkozan/clawcounting:latest \
+            ghcr.io/johnkozan/clawcounting:${{ steps.version.outputs.version }}-amd64 \
+            ghcr.io/johnkozan/clawcounting:${{ steps.version.outputs.version }}-arm64
 
   release:
     runs-on: ubuntu-latest
@@ -126,6 +156,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+          pattern: clawcounting-*
           merge-multiple: true
 
       - name: Create GitHub Release

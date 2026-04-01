@@ -1,0 +1,16 @@
+FROM debian:bookworm-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates tini \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY clawcounting /usr/local/bin/clawcounting
+
+VOLUME /data
+ENV CLAWCOUNTING_DB=/data/clawcounting.db
+ENV CLAWCOUNTING_HOST=0.0.0.0
+
+EXPOSE 3000
+
+ENTRYPOINT ["tini", "--", "clawcounting"]
+CMD ["serve"]
