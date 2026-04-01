@@ -1,26 +1,40 @@
 # Installation
 
-## Prerequisites
+## Docker
 
-- [Rust](https://rustup.rs/) (edition 2024)
-- [pnpm](https://pnpm.io/) (only needed for frontend development)
+The fastest way to get started. The image is published to GitHub Container Registry.
+
+```bash
+docker pull ghcr.io/johnkozan/clawcounting:latest
+
+# Initialize the database
+docker run -v clawcounting-data:/data ghcr.io/johnkozan/clawcounting init
+
+# Start the server
+docker run -p 3000:3000 -v clawcounting-data:/data ghcr.io/johnkozan/clawcounting serve
+```
+
+The database is stored in the `clawcounting-data` volume, so data persists across container restarts.
+
+## Download Binary
+
+Pre-built binaries for Linux, macOS, and Windows are available on the [GitHub Releases](https://github.com/johnkozan/clawcounting/releases) page.
+
+```bash
+# Initialize the database and start the server
+clawcounting init
+clawcounting serve
+```
 
 ## Build from Source
 
+**Prerequisites:** [Rust](https://rustup.rs/) (edition 2024), [pnpm](https://pnpm.io/)
+
 ```bash
-# Clone and install
 git clone https://github.com/johnkozan/clawcounting.git
 cd clawcounting
 cargo install --path .
 
-# Verify
-clawcounting --version
-```
-
-## Quick Start
-
-```bash
-# Initialize the database and start the server
 clawcounting init
 clawcounting serve
 ```

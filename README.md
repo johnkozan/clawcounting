@@ -26,20 +26,27 @@ Provides the accounting primitives -- currencies, accounts, journal entries, per
 
 ## Quick Start
 
-### Prerequisites
-
-- [Rust](https://rustup.rs/) (edition 2024)
-- [pnpm](https://pnpm.io/) (for frontend development)
-
-### Build and Run
+### Docker
 
 ```bash
-# Clone and install
+docker pull ghcr.io/johnkozan/clawcounting:latest
+
+# Initialize the database
+docker run -v clawcounting-data:/data ghcr.io/johnkozan/clawcounting init
+
+# Start the server
+docker run -p 3000:3000 -v clawcounting-data:/data ghcr.io/johnkozan/clawcounting serve
+```
+
+### Build from Source
+
+**Prerequisites:** [Rust](https://rustup.rs/) (edition 2024), [pnpm](https://pnpm.io/)
+
+```bash
 git clone https://github.com/johnkozan/clawcounting.git
 cd clawcounting
 cargo install --path .
 
-# Initialize the database and start the server
 clawcounting init
 clawcounting serve
 ```
