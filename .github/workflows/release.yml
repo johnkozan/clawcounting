@@ -54,6 +54,10 @@ jobs:
         run: pnpm install
         working-directory: frontend
 
+      - name: Build frontend
+        run: pnpm run build
+        working-directory: frontend
+
       - name: Install cross-compilation tools (Linux ARM)
         if: matrix.target == 'aarch64-unknown-linux-gnu' && runner.arch != 'ARM64'
         run: |
@@ -63,6 +67,8 @@ jobs:
 
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
+        env:
+          SKIP_FRONTEND_BUILD: "1"
 
       - name: Package (Unix)
         if: matrix.archive == 'tar.gz'
