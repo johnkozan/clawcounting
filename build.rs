@@ -136,6 +136,16 @@ fn fetch_crypto_tokens_json() {
     );
 }
 
+fn pnpm_cmd() -> Command {
+    if cfg!(target_os = "windows") {
+        let mut cmd = Command::new("cmd");
+        cmd.args(["/C", "pnpm"]);
+        cmd
+    } else {
+        Command::new("pnpm")
+    }
+}
+
 fn build_frontend() {
     let frontend_dir = Path::new("frontend");
 
@@ -160,7 +170,7 @@ fn build_frontend() {
     // Install dependencies if node_modules is missing
     if !frontend_dir.join("node_modules").exists() {
         println!("cargo:warning=Installing frontend dependencies...");
-        let status = Command::new("pnpm")
+        let status = pnpm_cmd()
             .arg("install")
             .current_dir(frontend_dir)
             .status();
@@ -180,7 +190,7 @@ fn build_frontend() {
 
     // Build frontend
     println!("cargo:warning=Building frontend...");
-    let status = Command::new("pnpm")
+    let status = pnpm_cmd()
         .args(["run", "build"])
         .current_dir(frontend_dir)
         .status();
