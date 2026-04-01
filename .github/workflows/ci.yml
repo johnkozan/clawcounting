@@ -31,6 +31,9 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
+      - name: Create frontend build dir for RustEmbed
+        run: mkdir -p frontend/build
+
       - name: Run clippy
         run: cargo clippy -- -D warnings
 
