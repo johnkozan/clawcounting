@@ -2,6 +2,8 @@ use rusqlite::{Connection, OptionalExtension, params};
 
 use crate::db::i128_funcs::decode_i128;
 use crate::error::AppError;
+
+type OptBlobPair = Option<(Option<Vec<u8>>, Option<Vec<u8>>)>;
 use crate::models::amount::i128_to_decimal_str;
 use crate::models::report::*;
 use crate::services::{account_service, period_service};
@@ -695,7 +697,7 @@ fn gl_sum_before_date(
     account_id: &str,
     date: &str,
 ) -> Result<(i128, i128), AppError> {
-    let result: Option<(Option<Vec<u8>>, Option<Vec<u8>>)> = conn
+    let result: OptBlobPair = conn
         .query_row(
             "SELECT sum_i128(jel.debit_amount), sum_i128(jel.credit_amount)
              FROM journal_entry_lines jel
@@ -717,7 +719,7 @@ fn gl_sum_through_date(
     account_id: &str,
     date: &str,
 ) -> Result<(i128, i128), AppError> {
-    let result: Option<(Option<Vec<u8>>, Option<Vec<u8>>)> = conn
+    let result: OptBlobPair = conn
         .query_row(
             "SELECT sum_i128(jel.debit_amount), sum_i128(jel.credit_amount)
              FROM journal_entry_lines jel
@@ -738,7 +740,7 @@ fn gl_sum_all(
     conn: &Connection,
     account_id: &str,
 ) -> Result<(i128, i128), AppError> {
-    let result: Option<(Option<Vec<u8>>, Option<Vec<u8>>)> = conn
+    let result: OptBlobPair = conn
         .query_row(
             "SELECT sum_i128(jel.debit_amount), sum_i128(jel.credit_amount)
              FROM journal_entry_lines jel
@@ -773,7 +775,7 @@ fn gl_sum_through_cursor(
                 OR (je.entry_date = ?2 AND je.posted_at = ?3 AND jel.id {id_op} ?4))"
     );
 
-    let result: Option<(Option<Vec<u8>>, Option<Vec<u8>>)> = conn
+    let result: OptBlobPair = conn
         .query_row(
             &sql,
             params![account_id, cursor.entry_date, cursor.posted_at, cursor.line_id],

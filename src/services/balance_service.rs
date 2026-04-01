@@ -2,6 +2,8 @@ use rusqlite::{Connection, OptionalExtension, params};
 
 use crate::db::i128_funcs::decode_i128;
 use crate::error::AppError;
+
+type OptBlobPair = Option<(Option<Vec<u8>>, Option<Vec<u8>>)>;
 use crate::models::amount::i128_to_decimal_str;
 use crate::models::journal_entry::BalanceResponse;
 use crate::services::account_service;
@@ -72,7 +74,7 @@ fn get_all_periods_balance(
     conn: &Connection,
     account_id: &str,
 ) -> Result<(i128, i128), AppError> {
-    let result: Option<(Option<Vec<u8>>, Option<Vec<u8>>)> = conn
+    let result: OptBlobPair = conn
         .query_row(
             "SELECT sum_i128(total_debits), sum_i128(total_credits)
              FROM account_balances WHERE account_id = ?1",
@@ -93,7 +95,7 @@ fn get_control_account_balance(
     period_id: Option<&str>,
 ) -> Result<(i128, i128), AppError> {
     let (td, tc) = if let Some(period_id) = period_id {
-        let result: Option<(Option<Vec<u8>>, Option<Vec<u8>>)> = conn
+        let result: OptBlobPair = conn
             .query_row(
                 "SELECT sum_i128(ab.total_debits), sum_i128(ab.total_credits)
                  FROM account_balances ab
@@ -105,7 +107,7 @@ fn get_control_account_balance(
             .optional()?;
         result.unwrap_or((None, None))
     } else {
-        let result: Option<(Option<Vec<u8>>, Option<Vec<u8>>)> = conn
+        let result: OptBlobPair = conn
             .query_row(
                 "SELECT sum_i128(ab.total_debits), sum_i128(ab.total_credits)
                  FROM account_balances ab

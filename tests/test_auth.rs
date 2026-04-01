@@ -287,7 +287,7 @@ async fn list_users() {
     // Should include the test admin user
     let resp = app.get("/api/v1/users").await;
     let users = resp["data"].as_array().unwrap();
-    assert!(users.len() >= 1); // test admin
+    assert!(!users.is_empty()); // test admin
 }
 
 #[tokio::test]

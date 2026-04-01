@@ -22,8 +22,8 @@ pub fn list(conn: &Connection, json: bool) -> Result<(), AppError> {
     }
 
     println!(
-        "{:<36}  {:<20}  {:<12}  {:<12}  {}",
-        "ID", "NAME", "START", "END", "STATUS"
+        "{:<36}  {:<20}  {:<12}  {:<12}  STATUS",
+        "ID", "NAME", "START", "END"
     );
     println!("{}", "-".repeat(100));
     for p in &periods {

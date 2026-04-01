@@ -99,7 +99,7 @@ pub async fn setup_status(
     State(state): State<AppState>,
 ) -> Result<Json<DataResponse<SetupStatusResponse>>, AppError> {
     let has_web_users = state
-        .with_read(|conn| user_service::has_any_web_users(conn))
+        .with_read(user_service::has_any_web_users)
         .await?;
     Ok(Json(DataResponse {
         data: SetupStatusResponse {

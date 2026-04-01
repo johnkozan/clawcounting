@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use axum::http::{HeaderName, HeaderValue};
 use axum_test::TestServer;
 use serde_json::{Value, json};

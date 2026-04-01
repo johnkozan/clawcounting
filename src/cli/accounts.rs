@@ -35,8 +35,8 @@ pub fn list(
     }
 
     println!(
-        "{:<36}  {:<8}  {:<28}  {:<10}  {:<8}  {}",
-        "ID", "NUMBER", "NAME", "TYPE", "NORMAL", "SUBLEDGER"
+        "{:<36}  {:<8}  {:<28}  {:<10}  {:<8}  SUBLEDGER",
+        "ID", "NUMBER", "NAME", "TYPE", "NORMAL"
     );
     println!("{}", "-".repeat(110));
     for a in &accounts {
@@ -54,6 +54,7 @@ pub fn list(
     Ok(())
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn create(
     conn: &Connection,
     name: &str,

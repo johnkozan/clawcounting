@@ -35,8 +35,8 @@ pub fn list(
     }
 
     println!(
-        "{:<36}  {:<12}  {:<40}  {}",
-        "ID", "DATE", "DESCRIPTION", "REV"
+        "{:<36}  {:<12}  {:<40}  REV",
+        "ID", "DATE", "DESCRIPTION"
     );
     println!("{}", "-".repeat(100));
     for e in &entries {
@@ -116,8 +116,8 @@ pub fn get(conn: &Connection, id: &str, json: bool) -> Result<(), AppError> {
         }
         println!("\nLines:");
         println!(
-            "  {:<36}  {:<16}  {:<16}  {}",
-            "ACCOUNT", "DEBIT", "CREDIT", "DESCRIPTION"
+            "  {:<36}  {:<16}  {:<16}  DESCRIPTION",
+            "ACCOUNT", "DEBIT", "CREDIT"
         );
         println!("  {}", "-".repeat(90));
         for line in &entry.lines {

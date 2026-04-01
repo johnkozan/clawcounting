@@ -67,6 +67,7 @@ async fn setup_test_data(app: &common::TestApp) -> TestData {
     }
 }
 
+#[allow(dead_code)]
 struct TestData {
     usd_id: String,
     cash_id: String,
@@ -82,7 +83,7 @@ struct TestData {
 #[tokio::test]
 async fn test_trial_balance_all_time() {
     let app = common::TestApp::new().await;
-    let data = setup_test_data(&app).await;
+    let _data = setup_test_data(&app).await;
 
     let resp: Value = app
         .server
@@ -181,7 +182,7 @@ async fn test_trial_balance_empty() {
 #[tokio::test]
 async fn test_balance_sheet_current() {
     let app = common::TestApp::new().await;
-    let data = setup_test_data(&app).await;
+    let _data = setup_test_data(&app).await;
 
     let resp: Value = app
         .server
@@ -242,7 +243,7 @@ async fn test_balance_sheet_after_period_close() {
 #[tokio::test]
 async fn test_balance_sheet_as_of_date() {
     let app = common::TestApp::new().await;
-    let data = setup_test_data(&app).await;
+    let _data = setup_test_data(&app).await;
 
     // As of 2026-03-31: only entry 1 (Cash DR 1000, Revenue CR 1000)
     let resp: Value = app
@@ -577,7 +578,7 @@ async fn test_general_ledger_pagination() {
 #[tokio::test]
 async fn test_trial_balance_matches_individual_balances() {
     let app = common::TestApp::new().await;
-    let data = setup_test_data(&app).await;
+    let _data = setup_test_data(&app).await;
 
     // Get trial balance
     let tb_resp: Value = app

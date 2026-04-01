@@ -22,8 +22,8 @@ pub fn list(conn: &Connection, json: bool) -> Result<(), AppError> {
     }
 
     println!(
-        "{:<36}  {:<8}  {:<24}  {:<6}  {:<6}  {}",
-        "ID", "CODE", "NAME", "SCALE", "TYPE", "CAIP-19"
+        "{:<36}  {:<8}  {:<24}  {:<6}  {:<6}  CAIP-19",
+        "ID", "CODE", "NAME", "SCALE", "TYPE"
     );
     println!("{}", "-".repeat(110));
     for c in &currencies {
@@ -36,6 +36,7 @@ pub fn list(conn: &Connection, json: bool) -> Result<(), AppError> {
     Ok(())
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn create(
     conn: &Connection,
     code: &str,
